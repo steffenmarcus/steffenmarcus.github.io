@@ -1,0 +1,2413 @@
+%%%%%%
+%\def\handout{0} %Use this for projected slides
+\def\handout{1} %Use this for handout
+\if 0\handout
+  \documentclass[notheorems,ignorenonframetext]{beamer}
+\else
+  \documentclass[12pt]{article}  % best readability and compactness for math
+  \usepackage[notheorems]{beamerarticle}
+  \usepackage[total={7.25in,9.75in}, top=0.5in, left=0.75in]{geometry}  %margin and orientation setting
+\fi
+%%%%%%%
+
+\usepackage{xparse}
+\usepackage{forest}
+\usepackage{multicol}
+\usepackage{advdate}
+%\usepackage{bm}
+
+
+\usepackage{graphicx}
+\usepackage{subfig}
+
+\usepackage[lines=0]{handoutWithNotes} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% 
+%% PACKAGES
+%% 
+
+\usepackage{graphicx}
+\usepackage{stmaryrd}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathabx}
+\usepackage{multirow}
+%\usepackage[mathcal]{euscript}
+\usepackage{scalerel}
+\usepackage{amstext} % for \text macro
+\usepackage{array}   % for \newcolumntype macro
+\newcolumntype{L}{>{$}l<{$}} % math-mode version of "l" column type
+
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{proposition}{Proposition}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{conjecture}{Conjecture}
+\newtheorem{problem}{Problem}
+\theoremstyle{definition}
+\newtheorem*{definition}{Definition}
+\newtheorem*{example}{Example}
+
+
+
+\everymath{\displaystyle}
+
+\usetikzlibrary{chains,decorations.pathmorphing,positioning,fit,tqft}
+\usetikzlibrary{decorations.shapes,calc,backgrounds}
+\usetikzlibrary{decorations.text,matrix,decorations.pathreplacing}
+\usetikzlibrary{arrows,shapes.geometric,shapes.symbols,scopes}
+\usetikzlibrary{patterns}
+\usetikzlibrary{decorations.markings,3d}
+
+\tikzset{
+  photon/.style={decorate, decoration={snake}, draw=black},
+  fermion/.style={draw=black, postaction={decorate},decoration={markings,mark=at position .55 with {\arrow{>}}}},
+  vertex/.style={draw,shape=circle,fill=black,minimum size=3pt,inner sep=0pt},
+}
+
+\NewDocumentCommand\semiloop{O{black}mmmO{}O{above}}
+{%
+\draw[#1] let \p1 = ($(#3)-(#2)$) in (#3) arc (#4:({#4+180}):({0.5*veclen(\x1,\y1)})node[midway, #6] {#5};)
+}
+%% Syntax
+%\semiloop[fermion][<draw options>]{<first node>}{<second node>}{<angle>}[<label>][<below, default: above>];
+
+\def\stretchint#1{\vcenter{\hbox{\stretchto[220]{\displaystyle\int}{#1}}}}
+\def\scaleint#1{\vcenter{\hbox{\scaleto[3ex]{\displaystyle\int}{#1}}}}
+\def\bs{\!\!}
+
+\makeatletter
+\tikzoption{canvas is xy plane at z}[]{%
+  \def\tikz@plane@origin{\pgfpointxyz{0}{0}{#1}}%
+  \def\tikz@plane@x{\pgfpointxyz{1}{0}{#1}}%
+  \def\tikz@plane@y{\pgfpointxyz{0}{1}{#1}}%
+  \tikz@canvas@is@plane
+}
+\makeatother
+
+
+%%%%%%%%%% for alt text graphics %%%%%%%%%%%%%%%%
+
+\ifdefined\HCode
+  % When compiling with make4ht
+  \newcommand{\includeimg}[3][]{%
+    \HCode{<img src="#2.png" alt="#3" class="graphics" />}%
+  }
+\else
+  % When compiling with pdflatex
+  \newcommand{\includeimg}[3][]{%
+    \includegraphics[#1]{#2}%
+  }
+\fi
+
+%\ifdefined\HCode
+%  \renewcommand{\v}{\mathbf{v}}
+%  \renewcommand{\u}{\mathbf{u}}
+%  \renewcommand{\w}{\mathbf{w}}
+%  \renewcommand{\i}{\mathbf{i}}
+%  \renewcommand{\j}{\mathbf{j}}
+%  \renewcommand{\k}{\mathbf{k}}
+%  \renewcommand{\a}{\mathbf{a}}
+%  \renewcommand{\b}{\mathbf{b}}
+%  \renewcommand{\c}{\mathbf{c}}
+%  \renewcommand{\r}{\mathbf{r}}
+%  \renewcommand{\n}{\mathbf{n}}
+%  \renewcommand{\x}{\mathbf{x}}
+%  \renewcommand{\F}{\mathbf{F}}
+%  \renewcommand{\T}{\mathbf{T}}
+%\else
+%   \renewcommand{\v}{{\bf v}}
+%   \renewcommand{\u}{{\bf u}}
+%   \newcommand{\w}{{\bf w}}
+%   \renewcommand{\i}{{\bf i}}
+%   \renewcommand{\j}{{\bf j}}
+%   \renewcommand{\k}{{\bf k}}
+%   \renewcommand{\a}{{\bf a}}
+%   \renewcommand{\b}{{\bf b}}
+%   \renewcommand{\c}{{\bf c}}
+%   \renewcommand{\r}{{\bf r}}
+%   \newcommand{\n}{{\bf n}}
+%   \newcommand{\x}{{\bf x}}
+%   \newcommand{\F}{{\bf F}}
+%   \newcommand{\T}{{\bf T}}
+%\fi
+
+%\renewcommand{\v}{\bm{v}}%
+%\renewcommand{\u}{\bm{u}}%
+%\newcommand{\w}{\bm{w}}%
+%\renewcommand{\i}{\bm{i}}%
+%\renewcommand{\j}{\bm{j}}%
+%\renewcommand{\k}{\bm{k}}%
+%\renewcommand{\a}{\bm{a}}%
+%\renewcommand{\b}{\bm{b}}%
+%\renewcommand{\c}{\bm{c}}%
+%\renewcommand{\r}{\bm{r}}%
+%\newcommand{\n}{\bm{n}}%
+%\newcommand{\x}{\bm{x}}%
+%\newcommand{\F}{\bm{F}}%
+%\newcommand{\T}{\bm{T}}%
+
+
+%%%%%%%%%% for alt text graphics %%%%%%%%%%%%%%%%
+
+
+
+
+%% 
+%% COLOR AND BEAMER SETUP
+%% 
+
+\definecolor{DarkWhale}{HTML}{342D7E}
+\definecolor{DarkFern}{HTML}{407428}
+\definecolor{DarkCharcoal}{HTML}{4D4944}
+\colorlet{Whale}{DarkWhale!85!white}
+\colorlet{LightWhale}{DarkWhale!50!white}
+\colorlet{Fern}{DarkFern!100!white}
+\colorlet{Charcoal}{DarkCharcoal!85!white}
+\colorlet{LightCharcoal}{Charcoal!50!white}
+\colorlet{AlertColor}{orange!80!black}
+\colorlet{DarkRed}{red!70!black}
+\colorlet{DarkBlue}{blue!70!black}
+\colorlet{DarkGreen}{green!70!black}
+% Use the colors:
+\setbeamercolor{title}{fg=Whale}
+\setbeamercolor{frametitle}{fg=Whale}
+\setbeamercolor{normal text}{fg=DarkCharcoal}
+\setbeamercolor{block title}{fg=black,bg=Fern!25!white}
+\setbeamercolor{block body}{fg=black,bg=Fern!25!white}
+\setbeamercolor{alerted text}{fg=AlertColor}
+\setbeamercolor{itemize item}{fg=Charcoal}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+
+\newcommand{\comp}[2]{\text{comp}_{#1}(#2)}
+\newcommand{\proj}[2]{\text{proj}_{#1}(#2)}
+
+
+\newcommand\blankframe{
+  \begin{frame}{}{}
+  \end{frame}
+}
+
+\newcommand\titleframe[1]{
+  \begin{frame}[plain]%
+    \begin{center}%
+      #1
+    \end{center}
+  \end{frame}
+}
+
+\newcommand\sectionframe[1]{
+  \titleframe{%
+    \Huge%
+    #1%
+  }
+}
+
+\NewDocumentCommand{\DrawCoordinateGrid}{O{} m m m m m m}{%
+    \def\XGridMin{#2}
+    \def\XGridMax{#3}
+    \def\YGridMin{#4}
+    \def\YGridMax{#5}
+    \def\ZGridMin{#6}
+    \def\ZGridMax{#7}
+    %
+    \begin{scope}[canvas is xy plane at z=0, thick, Whale]
+      \draw [#1] (\XGridMin,\YGridMin) grid (\XGridMax,\YGridMax);
+    \end{scope}
+    \begin{scope}[canvas is yz plane at x=0, thin, Fern]
+      \draw [#1] (\YGridMin,\ZGridMin) grid (\YGridMax,\ZGridMax);
+    \end{scope}
+    \begin{scope}[canvas is xz plane at y=0, thin, Charcoal]
+      \draw [#1] (\XGridMin,\ZGridMin) grid (\XGridMax,\ZGridMax);
+    \end{scope}
+}%
+
+\NewDocumentCommand{\DrawCoordinateAxis}{O{} m m m m m m}{%
+    \def\XAxisMin{#2}
+    \def\XAxisMax{#3}
+    \def\YAxisMin{#4}
+    \def\YAxisMax{#5}
+    \def\ZAxisMin{#6}
+    \def\ZAxisMax{#7}
+    %
+    \begin{scope}[thin, gray, -latex]
+        \draw [#1] (\XAxisMin,0,0) -- (\XAxisMax,0,0) node [below left] {$x$};
+        \draw [#1] (0,\YAxisMin,0) -- (0,\YAxisMax,0) node [right] {$y$};
+        \draw [#1] (0,0,\ZAxisMin) -- (0,0,\ZAxisMax) node [above] {$z$};
+    \end{scope}
+}%
+
+% A macro to save repeating the code
+\newcommand*{\DrawTriangle}{%
+    \begin{scope}[canvas is xy plane at z=0]
+      \draw [fill=yellow!50,opacity=0.6] (0,1) -- (3,0) -- (0,4) -- cycle;
+    \end{scope}
+}%
+
+
+
+
+\newcommand{\con}[3]{#1\equiv#2\,\,\text{mod}\,\,#3}
+\newcommand{\ncon}[3]{#1\nequiv#2\,\,\text{mod}\,\,#3}
+
+%%% TITLE INFO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\title{MAT 229: Multivariable Calculus \\ Chapter 14}
+
+\author{Steffen Marcus}
+
+\institute{The College of New Jersey}
+
+\date{Spring 2026}
+%\date{\AdvanceDate[0]\today}
+
+
+%\pgfpagesuselayout{2 on 1 with notes}[a4paper,border shrink=5mm]%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%\titleframe{\maketitle}
+\begin{frame}
+\maketitle 
+\end{frame}
+%%%%%%%%%%%%%%%%%% CH 12 %%%%%%%%%%%%%%
+%
+%\begin{frame}
+%\begin{figure}
+%\centering
+%\subfloat[Coordinate Axes]{
+%  \includeimg[width=0.45\textwidth]{axes}{Three-dimensional coordinate system showing x, y, and z axes meeting at origin O, with x pointing lower left, y pointing right, and z pointing upward}
+%}
+%\subfloat[Right Hand Rule]{
+%  \includeimg[width=0.45\textwidth]{rhrule}{Right-hand rule illustration for 3D coordinate orientation, with fingers curling from positive x-axis toward positive y-axis and thumb pointing toward positive z-axis}
+%}
+%\hspace{0mm}
+%\subfloat[Coordinate Planes]{
+%  \includeimg[width=0.45\textwidth]{planes}{The three coordinate planes in 3D space: the xy-plane (horizontal) where z equals 0, the xz-plane (green) where y equals 0, and the yz-plane (blue) where x equals 0, all intersecting at origin O}
+%}
+%\subfloat[Coordinates]{   % ???
+%  \includeimg[width=0.45\textwidth]{pointdetail}{Rectangular box showing how to locate point P(a,b,c) by traveling distance a along x-axis, then b parallel to y-axis to Q(a,b,0), then c parallel to z-axis to P(a,b,c)}
+%}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\textbf{Distance Formula in Three Dimensions:} The distance $|P_1P_2|$ between the points $P_1(x_1, y_1, z_1)$ and $P_2(x_2, y_2, z_2)$ in $\mathbb{R}^3$ is 
+%\[ |P_1P_2| = \sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2} \]
+%\pause
+%
+%\textbf{Equation of a Sphere:} The equation of a sphere with center $C(h,k,l)$ and radius $r>0$ in $\mathbb{R}^3$ is 
+%\[ (x-h)^2+(y-k)^2+(z-l)^2 = r^2\]\\
+%\begin{center}
+%\includeimg[width=0.4\textwidth]{sphere}{Sphere in 3D space with center C(h,k,l) and radius r, showing point P(x,y,z) on the surface connected to center by line segment of length r}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=0.5\textwidth]{book}{Cover of textbook Calculus Early Transcendentals 9th Edition by James Stewart, Daniel Clegg, and Saleem Watson}
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}
+%We call real numbers \emph{scalars} to differentiate them from vectors. A vector $\mathbf{v}$ is the data of a scalar magnitude (or length) $|\mathbf{v}|$ and a direction in space, notated geometrically as an arrow.
+%\vfill
+%The zero vector ${\bf 0}$ is the unique vector with length zero. It has no direction.\pause \vfill
+%
+%We add two vectors $\mathbf{u}$ and $\mathbf{v}$ by positioning them tip to tail. The sum $\mathbf{u}+\mathbf{v}$ is the vector drawn from the tail of $\mathbf{u}$ to the tip of $\mathbf{v}$. 
+%\vfill
+%For any scalar $c\in\mathbb{R}$ and any vector $\mathbf{v}$ we can multiply $c\mathbf{v}$ to produce the vector of length $c|\mathbf{v}|$ in:
+%\begin{itemize}
+%\item the same direction as $\mathbf{v}$ if $c>0$, and
+%\item the opposite direction as $\mathbf{v}$ if $c<0$.
+%\end{itemize}
+%\end{frame}
+%
+%\begin{frame}
+%\begin{figure}
+%\centering
+%\setcounter{subfigure}{0}% Reset subfigure counter
+%\subfloat[${\bf a} = a_1 {\bf i} + a_2{\bf j}$]{
+%  \includeimg[width=0.5\textwidth]{ij}{2D vector decomposition showing vector a from origin to point (a1,a2), with horizontal component a1 times i and vertical component a2 times j}
+%}
+%\subfloat[${\bf a} = a_1 {\bf i} + a_2{\bf j}+ a_3{\bf k}$]{
+%  \includeimg[width=0.5\textwidth]{ijk}{3D vector decomposition showing vector a from origin to point (a1,a2,a3), with components a1 times i along x-axis, a2 times j along y-axis, and a3 times k along z-axis}
+%}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\textbf{Properties of Vectors:} If $\mathbf{a}$, $\mathbf{b}$, and $\mathbf{c}$ are vectors and $c$ and $d$ are scalars, then 
+%\begin{enumerate}
+%\item $\mathbf{a}+\mathbf{b} = \mathbf{b}+\mathbf{a}$\\
+%\item $\mathbf{a}+(\mathbf{b}+\mathbf{c}) = (\mathbf{a}+\mathbf{b})+\mathbf{c}$\\
+%\item $\mathbf{a}+{\bf 0} = \mathbf{a}$\\
+%\item $\mathbf{a}+(-\mathbf{a}) = {\bf 0}$\\
+%\item $c(\mathbf{a}+\mathbf{b}) = c\mathbf{a}+c\mathbf{b}$\\
+%\item $(c+d)\mathbf{a} = c\mathbf{a}+d\mathbf{a}$\\
+%\item $(cd)\mathbf{a} = c(d\mathbf{a})$\\
+%\item $1\mathbf{a} = \mathbf{a}$
+%\end{enumerate}
+%
+%\end{frame}
+%
+%
+%
+%\begin{frame}
+%A \emph{unit vector} is a vector with length 1. \vfill
+%Notice, the three standard basis vectors $\mathbf{i}$, $\mathbf{j}$, and $\mathbf{k}$ are all unit vectors.\vfill
+%Given any nonzero vector $\mathbf{v}$, we can always form the unit vector in the same direction as $\mathbf{v}$ by taking the scalar multiple \[\mathbf{u} = \frac{1}{|\mathbf{v}|}\mathbf{v} \]
+%\end{frame}
+%
+%\begin{frame}
+%\textbf{Properties of the Dot Product:} If $\mathbf{a}$, $\mathbf{b}$, and $\mathbf{c}$ are vectors and $c$ is a scalar, then
+%\begin{enumerate}
+%\item $\mathbf{a}\cdot \mathbf{a} = |\mathbf{a}|^2$\\
+%\item $\mathbf{a}\cdot \mathbf{b} = \mathbf{b}\cdot \mathbf{a}$\\
+%\item $\mathbf{a}\cdot (\mathbf{b}+\mathbf{c}) = \mathbf{a}\cdot\mathbf{b} + \mathbf{a} \cdot \mathbf{c}$\\
+%\item $(c\mathbf{a})\cdot\mathbf{b} = c(\mathbf{a}\cdot\mathbf{b}) = \mathbf{a}\cdot(c\mathbf{b})$
+%\item ${\bf 0}\cdot\mathbf{a} = 0$
+%\end{enumerate}
+%\end{frame}
+%
+%\begin{frame}
+%If $\theta$ is the angle between the vectors $\mathbf{a}$ and $\mathbf{b}$, then 
+%\[
+%\mathbf{a}\cdot\mathbf{b} = |\mathbf{a}||\mathbf{b}|\cos\theta
+%\]
+%rearranging gives:
+%$
+%\cos\theta = \frac{\mathbf{a}\cdot\mathbf{b}}{|\mathbf{a}||\mathbf{b}|}
+%$\pause\vfill
+%Two vectors $\mathbf{a}$ and $\mathbf{b}$ are orthogonal if and only if $\mathbf{a}\cdot\mathbf{b} = 0$\pause\vfill
+%\begin{center}
+%\includeimg[width=0.4\textwidth]{angleswithcoordinatelines}{Vector a in 3D space showing direction angles alpha between a and positive x-axis, beta between a and positive y-axis, and gamma between a and positive z-axis}
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}
+%The \emph{vector projection} of $\mathbf{b}$ onto $\mathbf{a}$ is given by the formula
+%\[\text{proj}_{\mathbf{a}}{\mathbf{b}} = \frac{\mathbf{a}\cdot\mathbf{b}}{|\mathbf{a}|^2}\mathbf{a} \]
+%\begin{center}
+%\includeimg[width=0.4\textwidth]{proj}{Vector projection showing vectors a and b, with projection of b onto a shown as vector from P to S along direction of a, with perpendicular from tip of b to S}
+%\includeimg[width=0.4\textwidth]{proj2}{Vector projection for obtuse angle case, where projection of b onto a points opposite to a, from P toward S behind the starting point}
+%\end{center}
+%\vfill
+%The \emph{scalar projection} of $\mathbf{b}$ onto $\mathbf{a}$ is just the length of the vector projection and is given by the formula
+%\[\text{comp}_{\mathbf{a}}{\mathbf{b}} = \frac{\mathbf{a}\cdot\mathbf{b}}{|\mathbf{a}|} \]
+%\end{frame}
+%
+%\begin{frame}
+%If $\mathbf{a} = \langle a_1, a_2, a_3 \rangle$ and $\mathbf{b} = \langle b_1, b_2, b_3 \rangle$, then the \emph{cross product} of $\mathbf{a}$ and $\mathbf{b}$ is the vector 
+%
+%\[\mathbf{a}\times\mathbf{b} = \left| 
+%\begin{matrix}
+%\mathbf{i} & \mathbf{j} & \mathbf{k}\\
+%a_1 & a_2 & a_3\\
+%b_1 & b_2 & b_3\\
+%\end{matrix}
+%\right| = \langle a_2b_3-a_3b_2, a_3b_1-a_1b_3, a_1b_2-a_2b_1\rangle\]
+%\vfill
+%Recall that two vectors are othogonal if and only if their dot product is zero. 
+%\vfill
+%The cross product $\mathbf{a}\times\mathbf{b}$ is, by construction, always orthogonal to both $\mathbf{a}$ and $\mathbf{b}$. Its direction is determined by the right hand rule.
+%\end{frame}
+%
+%\begin{frame}
+%If $\theta$ is the angle between $\mathbf{a}$ and $\mathbf{b}$ (so $0\leq \theta \leq \pi$), then the length of the cross product $\mathbf{a}\times\mathbf{b}$ is given by the formula:
+%\[ |\mathbf{a}\times\mathbf{b}| = |a||b|\sin\theta\]
+%\pause \vfill
+%Two nonzero vectors $\mathbf{a}$ and $\mathbf{b}$ are parallel if and only if $\mathbf{a}\times\mathbf{b} = {\bf 0}$.
+%\end{frame}
+%
+%\begin{frame}
+%The length of the cross product $\mathbf{a}\times\mathbf{b}$ is equal to the area of the parallelogram determined by $\mathbf{a}$ and $\mathbf{b}$.
+%\begin{center}
+%\includeimg[width=0.8\textwidth]{crossprodparallel}{Parallelogram formed by vectors a and b showing angle theta between them and height labeled as magnitude of b times sine theta, illustrating that area equals magnitude of cross product}
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}
+%Cross product is NOT commutative. Cross product is NOT associative. Here are some other properties that do hold.\vfill
+%\textbf{Properties of the Cross Product:} If $\mathbf{a}$, $\mathbf{b}$, and $\mathbf{c}$ are vectors and $c$ is a scalar, then
+%\begin{enumerate}
+%\item $\mathbf{a}\times\mathbf{b} = -(\mathbf{b}\times\mathbf{a})$\\
+%\item $(c\mathbf{a})\times \mathbf{b} = c(\mathbf{a}\times \mathbf{b}) =\mathbf{a}\times (c\mathbf{b}) $\\
+%\item $\mathbf{a}\times (\mathbf{b}+\mathbf{c}) = \mathbf{a}\times\mathbf{b} + \mathbf{a}\times\mathbf{c}$\\
+%\item $(\mathbf{a}+\mathbf{b})\times\mathbf{c} = \mathbf{a}\times\mathbf{c}+\mathbf{b}\times\mathbf{c}$\\
+%\item $\mathbf{a}\cdot(\mathbf{b}\times\mathbf{c}) = (\mathbf{a}\times\mathbf{b})\cdot\mathbf{c}$\\
+%\item $\mathbf{a}\times(\mathbf{b}\times\mathbf{c}) = (\mathbf{a}\cdot\mathbf{c})\mathbf{b} - (\mathbf{a}\cdot\mathbf{b})\mathbf{c}$\\
+%\end{enumerate}
+% \vfill \pause
+%\begin{align*}
+%\mathbf{i}\times\mathbf{j} = \mathbf{k} && \mathbf{j}\times\mathbf{k} = \mathbf{i} && \mathbf{k}\times\mathbf{i}=\mathbf{j}\\
+%\mathbf{j}\times\mathbf{i} = -\mathbf{k} && \mathbf{k}\times\mathbf{j} = -\mathbf{i} && \mathbf{i}\times\mathbf{k}=-\mathbf{j}\\
+%\end{align*}
+%
+%\end{frame}
+%
+%
+%\begin{frame}
+%Let $P_0(x_0, y_0, z_0)$ be a point in space and $\mathbf{r}_0 = \overrightarrow{OP_0} = \langle x_0, y_0, z_0 \rangle$ its corresponding position vector.
+%\vfill
+%Let $\mathbf{v}=\langle a,b,c\rangle$ be a nonzero vector (our \emph{direction} vector). \\
+%\vfill
+%The {\bf vector equation of the line} $L$ through the point $P_0$, parallel to $\mathbf{v}$, is
+%\[\langle x,y,z\rangle = \mathbf{r}_0 + t\mathbf{v} = \langle x_0+ta, y_0+tb, z_0+tc \rangle  \]
+%\vfill
+%\begin{center}
+%\includeimg[width=0.5\textwidth]{vectoreqnline}{Vector equation of line L through point P0(x0,y0,z0) with position vector r0, parallel to direction vector v, showing arbitrary point P(x,y,z) with position vector r}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%Equating the components of the vector equation
+%\[\langle x,y,z\rangle = \mathbf{r}_0 + t\mathbf{v} = \langle x_0+ta, y_0+tb, z_0+tc \rangle  \]
+%gives the parametric equations of the line $L$:
+%\begin{align*}
+%x= x_0+ta\\
+%y=y_0+tb\\
+%z=z_0+tc
+%\end{align*}
+%Solving these for $t$ and equating give the symmetric equations of the line $L$:
+%\[\frac{x-x_0}{a}=\frac{y-y_0}{b}=\frac{z-z_0}{c}\]
+%\end{frame}
+%
+%\begin{frame}
+%Let $P_0(x_0, y_0, z_0)$ be a point in space and $\mathbf{r}_0 = \overrightarrow{OP_0} = \langle x_0, y_0, z_0 \rangle$ its corresponding position vector.
+%\vfill
+%Let $\mathbf{n}=\langle a,b,c\rangle$ be a nonzero vector (our \emph{normal} vector). \\
+%\vfill
+%The equation of the plane $Q$ through the point $P_0$, orthogonal to $\mathbf{n}$, is given by
+%\[\mathbf{n} \cdot (\mathbf{r}-\mathbf{r}_0) = 0 \]
+%\begin{center}
+%\includeimg[width=0.5\textwidth]{planevectoreqn}{Vector equation of plane containing point P0(x0,y0,z0) with position vector r0, normal vector n perpendicular to plane, and arbitrary point P(x,y,z) with position vector r}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%We often rewrite 
+%\[\mathbf{n} \cdot (\mathbf{r}-\mathbf{r}_0) = 0 \]
+%to look like this:
+%\[\mathbf{n} \cdot \mathbf{r} = \mathbf{n}\cdot \mathbf{r}_0 \]
+%In either form it is called the \emph{vector equation of the plane} $Q$. If we expand the dot products and set $d=ax_0+by_0+cz_0$, the resulting forms are
+%\[a(x-x_0)+b(y-y_0)+c(z-z_0) = 0 \]
+%and
+%\[ax+by+cz= d \]
+%The first is called the \emph{scalar equation of the plane}, the second is called the \emph{linear equation of the plane}.
+%\end{frame}
+%
+%\begin{frame}
+%Two planes are parallel if and only if their normal vectors are parallel.
+%\end{frame}
+%
+%
+%\begin{frame}
+%A \emph{cylinder} is a surface that consists of all lines (called rulings) that are parallel to a given line and pass through a given plane curve.
+%\vfill
+%The classic example is when the plane curve is a circle.
+%\begin{center}
+%\includeimg[width=0.7\textwidth]{cylinder}{Two cylinders: left shows circular cylinder with vertical axis along z formed by vertical rulings through circle in xy-plane; right shows cylinder with horizontal axis along y-direction}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%A \emph{quadric surface} is the graph of a second-degree (quadratic) equation in three variables $x$, $y$, and
+%$z$. 
+%\end{frame}
+%
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=\textwidth]{surface1}{Ellipsoid with equation x squared over a squared plus y squared over b squared plus z squared over c squared equals 1, showing elongated egg-shaped surface where all traces are ellipses}
+%\end{center}
+%\end{frame}
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=\textwidth]{surface2}{Cone with equation z squared over c squared equals x squared over a squared plus y squared over b squared, showing two cones meeting at origin with elliptical horizontal traces and hyperbolic vertical traces}
+%\end{center}
+%\end{frame}
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=\textwidth]{surface3}{Elliptic paraboloid with equation z over c equals x squared over a squared plus y squared over b squared, showing bowl-shaped surface opening upward with elliptical horizontal traces and parabolic vertical traces}
+%\end{center}
+%\end{frame}
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=\textwidth]{surface4}{Hyperboloid of one sheet with equation x squared over a squared plus y squared over b squared minus z squared over c squared equals 1, showing connected hourglass-shaped surface with elliptical horizontal traces and hyperbolic vertical traces}
+%\end{center}
+%\end{frame}
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=\textwidth]{surface5}{Hyperbolic paraboloid or saddle surface with equation z over c equals x squared over a squared minus y squared over b squared, curving upward in x-direction and downward in y-direction with hyperbolic horizontal traces}
+%\end{center}
+%\end{frame}
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=\textwidth]{surface6}{Hyperboloid of two sheets with equation negative x squared over a squared minus y squared over b squared plus z squared over c squared equals 1, showing two separate bowl-shaped surfaces above and below the origin}
+%\end{center}
+%\end{frame}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CH 13 %%%%%%%%%%%%%%
+%
+%\begin{frame}
+%A \emph{vector-valued function} (or vector function) is a function whose domain is a subset of the real numbers and whose range is a set of vectors. In three dimensions, this usually looks like a function $\mathbf{r}:\mathbb{R}\longrightarrow \mathbb{R}^3$ with $t$ our real variable giving an expression:
+%\[\mathbf{r}(t) = \langle f(t), g(t), h(t)\rangle \]
+%or in $\mathbf{i}$, $\mathbf{j}$, $\mathbf{k}$ notation
+%\[\mathbf{r}(t) = f(t)\mathbf{i}+g(t)\mathbf{j}+h(t)\mathbf{k}.\]
+%
+%The real-valued functions $f(t), g(t),$ and $h(t)$ are called the \emph{coordinate functions} of the vector-valued function $\mathbf{r}$.
+%\end{frame}
+%
+%\begin{frame}
+%The limit of a vector function $\mathbf{r}(t)= \langle f(t), g(t), h(t)\rangle$ is defined by taking the limits of its component functions, component by component. Meaning, for $a\in\mathbb{R}$:
+%\[\lim_{t\to a} \mathbf{r}(t) = \left\langle \lim_{t\to a}f(t), \lim_{t\to a}g(t), \lim_{t\to a}h(t)\right\rangle\]
+%provided the limits of the component functions exist.
+%
+%A vector function $\mathbf{r}$ is continuous at $a$ if and only if 
+%\[\lim_{t\to a} \mathbf{r}(t) = \mathbf{r}(a)\]
+%\end{frame}
+%
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=\textwidth]{spacecurve}{Space curve C in 3D with position vector r(t) from origin to point P(f(t),g(t),h(t)) on the curve, showing how the vector-valued function traces out the curve as t varies}
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}
+%The derivative of a vector function $\mathbf{r}(t)= \langle f(t), g(t), h(t)\rangle$ is defined by taking the usual limit for a derivative, but in vector form. Meaning the derivative of $\mathbf{r}$ is given by
+%\[\frac{d\mathbf{r}}{dt} = \mathbf{r}'(t) = \lim_{h\to0}\frac{\mathbf{r}(t+h)-\mathbf{r}(t)}{h}\]
+%if this limit exists.
+%\end{frame}
+%\begin{frame}
+%Let $C$ be a space curve defined by a vector function $\mathbf{r}$. If $P$ is a point on $C$ given by position vector $\mathbf{r}(t)$, then the vector $\mathbf{r}'(t)$ produced by taking the derivative gives the \emph{tangent vector} to the curve at $P$. 
+%\begin{center}
+%\includeimg[width=\textwidth]{tangentvector}{Two side-by-side diagrams showing the derivative of a vector function. Left: secant vector r(t+h) minus r(t) from point P to point Q on curve C. Right: as h approaches 0, the secant vector becomes the tangent vector r prime of t at point P, pointing along the curve}
+%\end{center}
+%\pause 
+%We can think of $P$ as a particle in space traveling along the path $C$ with it's position at time $t$ given by $\mathbf{r}(t)$, in which case the vector $\mathbf{r}'(t)$ is the velocity vector of the particle.
+%\end{frame}
+%
+%\begin{frame}
+%\begin{theorem}
+%The derivative of a vector function $\mathbf{r}(t)= \langle f(t), g(t), h(t)\rangle$, (when $f, g,$ and $h$ are differentiable functions), is given by 
+%\[\mathbf{r}'(t) = \langle f'(t), g'(t), h'(t)\rangle\]
+%\end{theorem}
+%\end{frame}
+%
+%\begin{frame}
+%Suppose $\mathbf{u}(t)$ and $\mathbf{v}(t)$ are differentiable vector functions, $c$ is a scalar, and $f$ is a real-valued function. Then
+%\begin{enumerate}
+%\item $\frac{d}{dt} [\mathbf{u}(t)+\mathbf{v}(t)] =\mathbf{u}'(t)+\mathbf{v}'(t)$
+%\item $\frac{d}{dt} [c\mathbf{u}(t)] = c\mathbf{u}'(t)$
+%\item $\frac{d}{dt} [f(t)\mathbf{u}(t)] = f'(t)\mathbf{u}(t)+f(t)\mathbf{u}'(t)$
+%\item $\frac{d}{dt} [\mathbf{u}(t)\cdot\mathbf{v}(t)] = \mathbf{u}'(t)\cdot\mathbf{v}(t)+\mathbf{u}(t)\cdot\mathbf{v}'(t)$
+%\item $\frac{d}{dt} [\mathbf{u}(t)\times\mathbf{v}(t)] = \mathbf{u}'(t)\times\mathbf{v}(t)+\mathbf{u}(t)\times\mathbf{v}'(t)$
+%\item $\frac{d}{dt} [\mathbf{u}(f(t))] = f'(t)\mathbf{u}'(f(t))$
+%\end{enumerate}
+%\end{frame}
+%
+%\begin{frame}
+%\begin{theorem}
+%If $|\mathbf{r}(t)| = c$ is constant as $t$ varies, then $\mathbf{r}'(t)$ is orthogonal to $\mathbf{r}(t)$ for all $t$.
+%\end{theorem}
+%\end{frame}
+%
+%\begin{frame}
+%\begin{center}
+%\includeimg[width=\textwidth]{code}{Mathematica code demonstrating that r(t) dot r prime(t) equals 0 when the magnitude of r(t) is constant. Shows definition of unit vector r(t), computation of r prime(t), and verification that their dot product simplifies to 0}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%Because the theory of limits goes through so nicely for vector functions, we can just as easily develop integration in this setting. The punchline is, for $\mathbf{r}(t)= \langle f(t), g(t), h(t)\rangle$ a continuous vector function:
+%\[\int_a^b \mathbf{r}(t)\,\,dt = \left \langle \int_a^b f(t)\,\,dt, \int_a^b g(t)\,\,dt, \int_a^b h(t)\,\,dt \right \rangle\]
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% CH 14 %%%%%%%%%%%%
+
+\begin{frame}
+We can always identify the real plane $\mathbb{R}^2$ as the $xy$-axis in 3-space $\mathbb{R}^3$ using the identification $(x,y)\mapsto (x,y,0)$ with the $z$ coordinate set to 0. In this way we can think of $\mathbb{R}^2$ as a subset of $\mathbb{R}^3$.
+\pause\vfill
+\begin{definition}
+Let $D\subseteq \mathbb{R}^2$ be a subset of the $xy$ plane. A \emph{function} \
+\begin{align*}
+&f:D\longrightarrow\mathbb{R}\\
+&(x,y)\mapsto f(x,y) = z
+\end{align*}
+\emph{of two variables} is a rule that assigns to each ordered pair of real numbers $(x, y)$ in $D$ a unique real number in the $z$ coordinate line denoted by $z=f(x, y)$. The subset $D$ of the real plane is the \emph{domain} of $f$ and its \emph{range} is the set of values that $f$ takes on.
+\end{definition}
+\vfill
+In this setting, $x$ and $y$ are independent variables while $z$ is the dependent variable.
+\end{frame}
+
+\begin{frame}
+If $f$ is a function of two variables with domain $D$, then \emph{the graph of} $f$ is the set of all points $(x, y, z)$ in $\mathbb{R}^3$ such that $z = f(x, y)$ and $x, y$ is in $D$.
+
+\begin{center}
+\includeimg[width=0.6\textwidth]{graphof2var}{Graph of a function of two variables showing surface S above domain D in the xy-plane, with a point (x,y,0) in D mapped vertically to point (x,y,f(x,y)) on the surface, height labeled as f(x,y)}
+\end{center}
+
+The graph of a function $f$ of two variables is a surface $S$ with equation $z = f (x, y)$.
+
+\end{frame}
+
+\begin{frame}
+\begin{definition}
+The \emph{level curves} of a function $f$ of two variables are the curves with equations $f (x, y) = k$, where k is a constant in the range of $f$.
+\end{definition}
+\begin{center}
+\includeimg[width=\textwidth]{levelcurves}{Two panels illustrating level curves. Left: a 3D surface resembling a hill with horizontal trace slices at heights k equals 20, 25, 30, 35, 40, 45, projecting down to concentric level curves in the xy-plane. Right: a topographic map of Lonesome Mountain showing contour lines at elevations 4000, 4500, 5000, 5500 feet with points A and B marked}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+Textbook Example (pg 944)
+\begin{figure}
+\setcounter{subfigure}{0}% Reset subfigure counter
+\subfloat[Level curves of $f(x,y) = -xye^{-x^2-y^2}$]{
+\includeimg[width=0.5\textwidth]{levelcurves1}{Level curves of f(x,y) equals negative xy times e to the negative x squared minus y squared, showing a four-leaf clover pattern with closed curves centered in each quadrant of the xy-plane}
+}
+\subfloat[Level curves of $f(x,y) = \frac{-3y}{x^2+y^2+1}$]{
+\includeimg[width=0.5\textwidth]{levelcurves2}{Level curves of f(x,y) equals negative 3y over x squared plus y squared plus 1, showing nested oval curves in the upper and lower half-planes, symmetric about the x-axis, with curves becoming more circular near the origin}
+}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+We can always identify the real 3-space $\mathbb{R}^3$ as the $xyz$-hyperplane in 4-space $\mathbb{R}^4$ using the identification $(x,y,z)\mapsto (x,y,z,0)$ with the last coordinate set to 0. In this way we can think of $\mathbb{R}^3$ as a subset of $\mathbb{R}^4$.
+\pause\vfill
+\begin{definition}
+Let $D\subseteq \mathbb{R}^3$ be a subset of the $xyz$ 3-space. A \emph{function} \
+\begin{align*}
+&f:D\longrightarrow\mathbb{R}\\
+&(x,y,z)\mapsto f(x,y,z) = w
+\end{align*}
+\emph{of three variables} is a rule that assigns to each ordered tripple of real numbers $(x, y, z)$ in $D$ a unique real number in the $w$ coordinate line denoted by $w=f(x, y, z)$. The subset $D$ of the real 3-space is the \emph{domain} of $f$ and its \emph{range} is the set of values that $f$ takes on.
+\end{definition}
+\vfill
+In this setting, $x,y,$ and $z$ are independent variables while $w$ is the dependent variable.
+\end{frame}
+
+
+
+\begin{frame}
+If $f$ is a function of three variables with domain $D$, then \emph{the graph of} $f$ is the set of all points $(x, y, z,w)$ in $\mathbb{R}^4$ such that $w = f(x, y, z)$ and $x, y, z$ is in $D$. 
+\vfill
+This is usually very hard for our three dimensional minded imaginations to draw. 
+\vfill
+In any case, the graph of a function $f$ of three variables is a 3-dimensional object $B$ sitting in $\mathbb{R}^4$ with equation $w = f (x, y, z)$.
+\end{frame}
+
+
+
+\begin{frame}
+We CAN, however, draw the shadows of horizontal traces of $B$ made by setting $w$ equal to a constant. These appear as surfaces in $\mathbb{R}^3$ which we call the \emph{level surfaces} of $f$. \vfill
+\begin{definition}
+The \emph{level surfaces} of a function $f$ of three variables are the surfaces with equations $f (x, y,z) = k$, where k is a constant in the range of $f$.
+\end{definition}
+\end{frame}
+
+
+\begin{frame}
+\begin{center}
+\includeimg[width=0.8\textwidth]{levelsurfacesspheres}{Level surfaces for f(x,y,z) equals x squared plus y squared plus z squared, showing three nested concentric spheres with cutaway view, labeled with equations x squared plus y squared plus z squared equals 1, 2, and 3 from innermost to outermost}
+\end{center}
+\end{frame}
+
+\begin{frame}
+
+Limits from Calculus A and B:
+\begin{definition}
+Let $f(x)$ be a real valued function. Suppose $f(x)$ is defined when $x$ is near the number $a$. (This means that $f$ is defined on some open interval that contains $a$, except possibly at $a$ itself.) Then we write
+\[\lim_{x\to a}f(x) = L\]
+and say ``the limit of $f(x)$ as $x$ approaches $a$ equals $L$" if we can make the values of $f(x)$ arbitrarily close to L (as close to L as we like) by restricting $x$ to be sufficiently close to $a$ (on either side of $a$) but not equal to $a$. 
+\end{definition}
+
+\end{frame}
+
+\begin{frame}
+
+Attempt at a limit definition for $z=f(x,y)$:
+\begin{definition}
+Let $f(x,y)$ be a real valued function defined on a domain $D\subset \mathbb{R}^2$ surrounding the point $(a,b)$. (This means that points in the domain $D$ are arbitrarily close to $(a,b)$ but $f$ may not be defined at the point $(a,b)$ itself.) Then we write
+\[\lim_{(x,y)\to (a,b)}f(x,y) = L\]
+and say ``the limit of $f(x,y)$ as $(x,y)$ approaches $(a,b)$ equals $L$" if we can make the values of $f(x,y)$ arbitrarily close to L (as close to L as we like) by restricting $(x,y)$ to be sufficiently close to $(a,b)$ (meaning in all directions following any path in the plane that goes through $(a,b)$) but not equal to $(a,b)$. 
+\end{definition}
+
+\end{frame}
+\begin{frame}
+
+Formal definition of a limit for $z=f(x,y)$:
+\begin{definition}
+Let $f(x,y)$ be a real valued function defined on a domain $D\subset \mathbb{R}^2$ whose points are arbitrarily close to $(a,b)$. We say \emph{the limit of $f(x,y)$ as $(x,y)$ approaches $(a,b)$ is $L$} and write 
+\[\lim_{(x,y)\to (a,b)}f(x,y) = L\]
+if for every given distance $\epsilon > 0$ we can find a corresponding distance $\delta>0$ such that if $(x,y)\in D$ and the distance between $(x,y)$ and $(a,b)$ satisfies 
+\[0<\sqrt{(x-a)^2+(y-b)^2}<\delta\]
+then $|f(x,y)-L|<\epsilon$.
+\end{definition}
+
+\end{frame}
+
+\begin{frame}
+Standard method to show a limit does not exist:
+\begin{center}
+\includeimg[width=0.7\textwidth]{paths}{Multiple paths in the xy-plane approaching point (a,b), illustrating that limits of multivariable functions require the same limit value along all possible paths, including straight lines, curves, and oscillating paths}
+\end{center}
+{\bf If $f(x, y) \longrightarrow L_1$ as $(x, y)\longrightarrow (a,b)$ along a path $C_1$, but\\
+$f(x, y) \longrightarrow L_2$ as $(x, y)\longrightarrow (a,b)$ along a path $C_2$,\\ and $L_1 \neq L_2$, 
+then \[\lim_{(x, y)\to(a,b)}f(x, y)\] does not exist.}
+\end{frame}
+
+\begin{frame}
+\begin{enumerate}
+\item The limit of a sum is the sum of the limits.\\
+
+\item The limit of a difference is the difference of the limits.
+
+\item The limit of a constant times a function is the constant times the limit of the function.
+
+\item The limit of a product is the product of the limits.
+
+\item The limit of a quotient is the quotient of the limits (provided that the limit of the denominator is not zero).
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+A function $f$ of two variables is called continuous at $(a, b)$ if \[\lim_{(x,y)\to(a,b)} f(x, y) = f(a, b)\]
+We say that $f$ is continuous on $D$ if $f$ is continuous at every point $(a, b)$ in $D$.
+\end{frame}
+
+\begin{frame}
+A \emph{polynomial} function of 2 variables is a sum and product of terms involving only constants, powers of $x$, and powers of $y$. For example: $p(x,y) = x^2+2y^2-3x^3y+17$.\vfill
+
+A \emph{rational} function of 2 variables is a ratio of polynomial functions, for example: $q(x,y) = \frac{3xy-2x+1}{x^2+y^2}$.\vfill
+Notice: 
+\begin{enumerate}
+\item $\lim_{(x,y)\to(a,b)} x = a$ and
+\item $\lim_{(x,y)\to(a,b)} y = b$ and  
+\item $\lim_{(x,y)\to(a,b)} k = k$ for any constant $k$.
+\end{enumerate}
+\vfill
+Thus, by the limit laws, polynomials and rational functions are continuous everywhere they are defined.
+\end{frame}
+
+\begin{frame}
+If $f$ is a function of two variables, its partial derivatives are the functions $f_x$ and $f_y$ defined by
+\[f_x(x,y) = \lim_{h\to 0} \frac{f(x+h,y)-f(x,y)}{h} \]
+\[f_y(x,y) = \lim_{h\to 0} \frac{f(x,y+h)-f(x,y)}{h} \]
+
+\pause
+
+Setting $z=f(x,y)$, we use the following notations interchangeably:
+\[f_x(x,y) = f_x = \frac{\partial f}{\partial x} =\frac{\partial }{\partial x} f(x,y) = \frac{\partial z}{\partial x} = D_x f  \]
+\[f_y(x,y) = f_y = \frac{\partial f}{\partial y} =\frac{\partial }{\partial y} f(x,y) = \frac{\partial z}{\partial y} = D_y f  \]
+
+\end{frame}
+
+\begin{frame}
+
+{\bf The partial derivative of a function with respect to a variable is just the ordinary derivative of the function of a single variable that we get by keeping all the other variables fixed. }
+
+\vfill In the case of a function of two variables $z=f(x,y)$: \vfill
+
+\begin{enumerate}
+\item To find $f_x$, regard y as a constant and differentiate $f(x,y)$ with respect to $x$.
+\item To find $f_y$, regard x as a constant and differentiate $f(x,y)$ with respect to $y$.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+The partial derivatives of $f$ at $(a, b)$ are the slopes of the tangents lines $T_1$ and $T_2$ to curves $C_1$ and $C_2$ along the surface $z=f(x,y)$ given by the traces in the $x$ and $y$ directions.
+\begin{center}
+\includeimg[width=0.5\textwidth]{tangents}{Surface S in 3D with point P(a,b,c), showing two curves C1 and C2 on the surface intersecting at P, with their respective tangent lines T1 and T2 crossing at P, illustrating how partial derivatives give slopes in different directions}
+\end{center}
+\end{frame}
+
+\begin{frame}
+For functions of three or more. variables, all the same definitions and notations apply. Setting $w=f(x,y,z)$:
+\[f_x(x,y,z) = \lim_{h\to 0} \frac{f(x+h,y,z)-f(x,y,z)}{h} \]
+\[f_y(x,y,z) = \lim_{h\to 0} \frac{f(x,y+h,z)-f(x,y,z)}{h} \]
+\[f_z(x,y,z) = \lim_{h\to 0} \frac{f(x,y,z+h)-f(x,y,z)}{h} \]
+\[f_x(x,y,z) = f_x = \frac{\partial f}{\partial x} =\frac{\partial }{\partial x} f(x,y,z) = \frac{\partial w}{\partial x} = D_x f  \]
+\[f_y(x,y,z) = f_y = \frac{\partial f}{\partial y} =\frac{\partial }{\partial y} f(x,y,z) = \frac{\partial w}{\partial y} = D_y f  \]
+\[f_z(x,y,z) = f_z = \frac{\partial f}{\partial z} =\frac{\partial }{\partial z} f(x,y,z) = \frac{\partial w}{\partial y} = D_z f  \]
+\end{frame}
+
+\begin{frame}
+The notations for higher order derivatives tell us the order in which we differentiate. $z=f(x,y)$:
+\[(f_x)_x = f_{xx} = \frac{\partial }{\partial x} \frac{\partial f}{\partial x} =\frac{\partial^2 f}{\partial x^2} = \frac{\partial^2 z}{\partial x^2}  \]
+\[(f_x)_y = f_{xy} = \frac{\partial }{\partial y} \frac{\partial f}{\partial x} =\frac{\partial^2 f}{\partial y\partial x} = \frac{\partial^2 z}{\partial y \partial x}  \]
+\[(f_y)_x = f_{yx} = \frac{\partial }{\partial x} \frac{\partial f}{\partial y} =\frac{\partial^2 f}{\partial x\partial y} = \frac{\partial^2 z}{\partial x \partial y}  \]
+\[(f_y)_y = f_{yy} = \frac{\partial }{\partial y} \frac{\partial f}{\partial y} =\frac{\partial^2 f}{\partial y^2} = \frac{\partial^2 z}{\partial  y^2}  \]
+
+
+\end{frame}
+
+\begin{frame}
+Luckily, there is a famous theorem that says, for continuous functions with continuous derivatives, the order in which you differentiate doesn't matter:
+\begin{theorem}[Clairaut’s Theorem]
+Suppose $f(x,y)$ is defined on a disk $D$ that contains the point $(a, b)$. If the functions $f_{xy}$ and $f_{yx}$ are both continuous on D, then $f_{x y}(a, b) = f_{yx}(a, b)$.
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+
+This works even for third and higher derivatives, for example, the third derivative
+\[f_{xyy}=(f_{xy})_y = \frac{\partial }{\partial y} \left(\frac{\partial f^2}{\partial y\partial x}\right) = \frac{\partial f^3}{\partial y^2\partial x}\]
+of a function $f(x,y)$ satisfies 
+\[f_{xyy} = f_{yxy} = f_{yyx}\]
+if all these functions are continuous.
+\end{frame}
+
+\begin{frame}
+Suppose $f(x,y)$ has continuous partial derivatives and $(x_0, y_0)$ is in the domain of $f$. Set $z_0=f(x_0,y_0)$. \\\vfill
+
+An equation of the tangent plane to the surface $z=f(x,y)$ at the point $P(x_0, y_0, z_0)$ on the surface is 
+\[z-z_0 = f_x(x_0,y_0)(x-x_0) + f_y(x_0,y_0)(y-y_0)\] \pause
+\vfill
+For a fixed point $(a,b)$ in the domain, (remembering that $z_0 = f(a,b)$ when $x_0=a$ and $y_0=b$), we get an equation for the \emph{linearization} of $f$ near the point $(a,b)$:
+\[f(x,y)\approx L(x,y) =f(a,b) + f_x(a,b)(x-a) + f_y(a,b)(y-b)\]
+We think of this as the \emph{linear approximation} of $f$ at $(a,b)$.
+\end{frame}
+
+\begin{frame}
+There is a formal definition of differentiability (see textbook), but for our purposes the following theorem will usually be enough:
+\begin{theorem}
+Let $f$ be a function of two variables $x$ and $y$.
+
+If the partial derivatives $\frac{\partial f}{\partial x}$ and $\frac{\partial f}{\partial y}$ exist near $(a,b)$ and are continuous at $(a,b)$ then $f$ is differentiable at $(a,b)$.
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\begin{figure}[h]
+\centering
+\setcounter{subfigure}{0}% Reset subfigure counter
+\subfloat[Calc A Differentials]{
+\includeimg[width=0.45\textwidth]{diff1}{Single-variable differentials: curve y equals f(x) with tangent line at point a, showing dx equals Delta x as horizontal change, dy as vertical change along tangent line, and Delta y as actual vertical change to the curve}
+}
+\subfloat[3D Differentials]{
+\includeimg[width=0.55\textwidth]{diff2}{Two-variable differentials in 3D: surface z equals f(x,y) with tangent plane at point (a,b,f(a,b)), showing rectangular region with sides Delta x equals dx and Delta y equals dy, dz as height change on tangent plane, and Delta z as actual height change to the surface}
+}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+{\bf The Chain Rule (Case 1):}
+Suppose $z=f(x,y)$ is a differentiable function of $x$ and $y$, where \[x = g(t) \hspace{0.5cm} \text{and} \hspace{0.5cm} y=h(t)\] are both differentiable functions of $t$. Then the composition \[z(t) = f(x(t), y(t))\] is a differentiable function of $t$ and 
+\[\frac{d z}{d t} = \frac{\partial f}{\partial x} \frac{d x}{d t} + \frac{\partial f}{\partial y} \frac{d y}{d t}\] or, if you like
+\[\frac{d z}{d t} = \frac{\partial z}{\partial x} \frac{d x}{d t} + \frac{\partial z}{\partial y} \frac{d y}{d t}\]
+
+\end{frame}
+
+
+\begin{frame}
+{\bf The Chain Rule (Case 2):}
+Suppose $z=f(x,y)$ is a differentiable function of $x$ and $y$, where \[x = g(s,t) \hspace{0.5cm} \text{and} \hspace{0.5cm} y=h(s,t)\] are both differentiable functions of $s$ and $t$. Then the composition \[z(s,t) = f(x(s,t), y(s,t))\] is a differentiable function of $s$ and $t$ and 
+\[\frac{\partial z}{\partial s} = \frac{\partial z}{\partial x} \frac{\partial x}{\partial s} + \frac{\partial z}{\partial y} \frac{\partial y}{\partial s}\hspace{0.8cm} \frac{\partial z}{\partial t} = \frac{\partial z}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial z}{\partial y}. \frac{\partial y}{\partial t}\]
+\end{frame}
+
+\begin{frame}
+{\bf The Chain Rule (General Version):}
+Suppose:
+\begin{itemize} 
+\item $u$ is a differentiable function of $x_1,\ldots x_n$
+\item each $x_i$ is a differentiable function of $t_1,\ldots t_m$
+\end{itemize}
+Then $u$ is a differentiable function of $t_1,\ldots t_m$ and the partial derivative of $u$ with respect to $t_i$ is
+\[\frac{\partial u}{\partial t_i} = \frac{\partial u}{\partial x_1} \frac{\partial x_1}{\partial t_i} + \frac{\partial u}{\partial x_2} \frac{\partial x_2}{\partial t_i} + \cdots + \frac{\partial u}{\partial x_n} \frac{\partial x_n}{\partial t_i}.\]
+
+This expression can easily be derived from a tree diagram of partials.
+
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\includeimg[width=0.3\textwidth]{dirdiv}{Directional derivative visualization: surface S with point P(x0,y0,z0), unit vector u in the xy-plane from P prime to Q prime with components ha and hb, vertical plane through u intersecting surface along curve C, and tangent line T at P showing the directional derivative}
+\end{center}
+
+The \emph{directional derivative} of $f(x,y)$ at $(x_0,y_0)$ in the direction of the unit vector $\mathbf{u}=\langle a,b\rangle$ is 
+\[D_{\mathbf{u}}f(x_0,y_0) = \lim_{h\to 0}\frac{f(x_0+ha,y_0+hb) - f(x_0,y_0)}{h}\]
+if this limit exists.
+\end{frame}
+
+\begin{frame}
+If $f$ is a differentiable function of $x$ and $y$, then $f$ has a directional derivative in the direction of any unit vector $\mathbf{u} = \langle a, b\rangle$ and
+\[ D_{\mathbf{u}} f(x,y) = f_x(x,y)a + f_y(x,y)b\]\pause
+
+If $f$ is a function of two variables $x$ and $y$, then the \emph{gradient} of $f$ is the vector function $\nabla f$ defined by 
+\[\nabla f(x,y) = \langle f_x(x,y), f_y(x,y) \rangle = \frac{\partial f}{\partial x}\mathbf{i} + \frac{\partial f}{\partial y}\mathbf{j}\]
+making
+\[ D_{\mathbf{u}} f(x,y) = \nabla f \cdot \mathbf{u}\]
+for any unit vector $\mathbf{u}$.
+\end{frame}
+
+\begin{frame}
+This generalizes to any dimension. Indeed we can write the directional derivative's limit definition in vector notation.
+
+Let $\mathbf{r}_0$ be a position vector for a point in space, and let $\mathbf{u}$ be a unit vector. Then
+\[D_{\mathbf{u}}f(\mathbf{r}_0) = \lim_{h\to 0}\frac{f(\mathbf{r}_0+h\mathbf{u}) - f(\mathbf{r}_0)}{h}\]
+
+\end{frame}
+
+\begin{frame}
+In the case that we have $w=f(x,y,z)$ and $\mathbf{r}_0 = \langle x_0, y_0, z_0 \rangle$ with $\mathbf{u} = \langle a,b,c \rangle$ this becomes 
+\[D_{\mathbf{u}}f(x_0,y_0,z_0) = \lim_{h\to 0}\frac{f(x_0+ha,y_0+hb, z_0+hc) - f(x_0,y_0, z_0)}{h}\]
+if this limit exists. The \emph{gradient} of $f$ is now the vector function
+\[\nabla f(x,y,z) = \langle f_x(x,y,z), f_y(x,y,z), f_z(x,y,z) \rangle = \frac{\partial f}{\partial x}\mathbf{i} + \frac{\partial f}{\partial y}\mathbf{j}+\frac{\partial f}{\partial z}\mathbf{k}\]
+and it is not hard to deduce that
+\[ D_{\mathbf{u}} f(x,y) = \nabla f \cdot \mathbf{u} = f_x(x,y,z)a + f_y(x,y,z)b + f_z(x,y,z)c \]
+\end{frame}
+
+\begin{frame}
+%Besides giving us a directional derivative, we can interpret the gradient vector of $f$ geometrically. \\
+
+Let $f$ be a function of two or three variables. \\
+\bigskip
+Remember that $\mathbf{x}=\langle x,y\rangle$ or $\mathbf{x}=\langle x,y,z\rangle$ (depending on the dimension).\\
+\bigskip
+ Consider ALL possible directional derivatives of $f$ at a given point. These give the rates of change of $f$ in all possible directions.\\
+\bigskip
+
+In which of these directions does $f$ change fastest, and what is the maximum rate of change?\\
+
+\begin{theorem}
+The maximum value of the directional derivative $D_{\mathbf{u}}f(\mathbf{x})$ is $|\nabla f(\mathbf{x})|$ and it occurs when $\mathbf{u}$ has the same direction as the gradient vector $\nabla f(\mathbf{x})$.
+\end{theorem}
+
+\end{frame}
+
+\begin{frame}
+Let $F(x,y,z)$ be a function of three variables and consider the level surface $S$ given by the level set $F(x,y,z)=k$.\\ \bigskip
+
+The gradient vector $\nabla F(x_0, y_0, z_0)$ at a point $P(x_0, y_0, z_0)$ on $S$ is perpendicular to the tangent vector to EVERY space curve $C$ on $S$ that passes through $P$. \\ \bigskip
+
+We say the gradient vector is orthogonal to the level surface itself. \\ \bigskip
+
+The same thing happens in one fewer dimension also: the gradient vector of $f(x,y)$ is orthogonal to the level curve $f(x,y)=k$.
+
+\end{frame}
+
+\begin{frame}
+
+\begin{center}
+\includeimg[width=0.5\textwidth]{gradtangent}{Gradient vector and tangent plane: surface S with level curve C, point P on the surface, gradient vector nabla F(x0,y0,z0) pointing perpendicular to the tangent plane, and tangent vector r prime(t0) lying in the tangent plane}
+\end{center}
+
+
+{\bf Thus the tangent plane to the level surface $F(x,y,z)=k$ at $P(x_0, y_0, z_0)$ on $S$ is the plane that passes through $P$ and has normal vector $\nabla F(x_0, y_0, z_0)$}.
+It has an equation given by 
+\[\nabla F(x_0, y_0, z_0)\cdot\langle x-x_0, y-y_0, z-z_0\rangle = 0\]
+which opens up to
+\[F_x(x_0, y_0, z_0)(x-x_0)+ F_y(x_0, y_0, z_0)(y-y_0)+F_z(x_0, y_0, z_0)(z-z_0)= 0.\]
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TEST 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+Let $f(x,y)$ be a function of two variables.\\
+
+\bigskip
+
+$f$ has a \emph{local maximum} at $(a,b)$ if $f(x,y)\leq f(a,b)$ when $(x,y)$ is near $(a,b)$, meaning $(x,y)$ is inside some small disk centered at $(a,b)$. The value $f(a,b)$ is called the \emph{local maximum value}.\\ \bigskip
+
+$f$ has a \emph{local minimum} at $(a,b)$ if $f(x,y)\geq f(a,b)$ when $(x,y)$ is near $(a,b)$, meaning $(x,y)$ is inside some small disk centered at $(a,b)$. The value $f(a,b)$ is called the \emph{local minimum value}. 
+
+\begin{center}
+\includeimg[width=0.5\textwidth]{gradtangent}{Gradient vector and tangent plane: surface S with level curve C, point P on the surface, gradient vector nabla F(x0,y0,z0) pointing perpendicular to the tangent plane, and tangent vector r prime(t0) lying in the tangent plane}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+
+{\bf First Derivative Test}
+If $f$ has a local maximum or minimum at $(a, b)$ and the first-order partial derivatives of $f$ exist there, then $f_x(a, b) = 0$ and $f_y(a, b) = 0$. \\ \bigskip
+
+In this case the tangent plane to the surface $z=f(x,y)$ at the point $(a,b,f(a,b))$ will be horizontal. \\\bigskip
+
+A point $(a, b)$ is called a critical point (or stationary point) of $f$ if $f_x(a, b) = 0$ and $f_y(a, b) = 0$, or if one of these partial derivatives does not exist.\\\bigskip
+
+Not all critical points result in a local maximum or local minimum.
+\end{frame}
+
+\begin{frame}
+
+{\bf Second Derivative Test} Suppose the second partial derivatives of $f$ are continuous on a disk with center $(a, b)$, and suppose that $(a, b)$ is a critical point of $f$. Set 
+\[D(a,b) = \left | 
+\begin{matrix}
+f_{xx}(a,b) & f_{xy}(a,b)\\
+f_{yx}(a,b) & f_{yy}(a,b)
+\end{matrix}
+\right| = f_{xx}(a,b)f_{yy}(a,b) - [f_{xy}(a,b)]^2\]
+
+\begin{enumerate}
+\item[(a)] If $D>0$ and $f_{xx}(a,b)>0$ then $f(a,b)$ is a local minimum.
+\item[(b)] If $D>0$ and $f_{xx}(a,b)<0$ then $f(a,b)$ is a local maximum.
+\item[(c)] If $D<0$ then $(a,b)$ is a saddle point of $f$.
+\item[(d)] If $D=0$ then we get no information.
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}
+
+Let $(a,b)$ be a point in the domain $D$ of $f(x,y)$. Then $f(a,b)$ is the 
+
+\begin{itemize}
+\item \emph{absolute maximum} value of $f$ on $D$ if  \[f(a,b)\geq f(x,y)\text{ for all }(x,y)\in D.\]
+\item \emph{absolute minimum} value of $f$ on $D$ if \[f(a,b)\leq f(x,y)\text{ for all }(x,y)\in D.\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+Let $D\subseteq\mathbb{R}^2$ be a subset of the plane. 
+\begin{itemize}
+\item A \emph{boundary point} of $D$ is a point $(a,b)\in D$ such that every disk centered at $(a,b)$ contains both points inside $D$ and also points not in $D$.
+\item  $D$ is said to be \emph{closed} if it contains all its boundary points.
+\item $D$ is said to be \emph{bounded} if it can be contained within some larger disk of finite radius.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{theorem}[Extreme Value Theorem for Functions of Two Variables] If $f$ is continuous on a closed, bounded set $D$ in $\mathbb{R}^2$, then $f$ attains an absolute maximum value $f(x_1, y_1)$ and an absolute minimum value $f(x_2, y_2)$ at some points $(x_1, y_1)$ and $(x_2, y_2)$ in $D$.
+\end{theorem}
+Thus extreme values of $f$ occur either (1) at critical points of $f$, or (2) along the boundary of $D$. To find the absolute maximum and minimum values:
+\begin{itemize}
+\item[(1)] Find all the values of $f$ at the critical points of $f$ in $D$.
+\item[(2)] Find the extreme values of $f$ on the boundary of $D$.
+\item[(3)] The largest of the values from steps (1) and (2) is the absolute maximum value; the smallest of these values is the absolute minimum value.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+Find the absolute maximum and minimum values of the function $f(x, y) = x^2 + y^2-2x$ on the closed triangular region $D$ with vertices $P(0,2)$, $Q(0,-2)$, and $R(2,0)$.
+\begin{center}
+\includeimg[width=0.3\textwidth]{question_2_14_7}{Triangular domain in the xy-plane with vertices at (0,2), (2,0), and (0,-2), boundary segments labeled L1 (vertical segment on y-axis from (0,-2) to (0,2)), L2 (diagonal from (0,-2) to (2,0)), and L3 (diagonal from (0,2) to (2,0))}
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+Find the absolute maximum and minimum values of the function $f(x, y) = x^2 - 2xy + 2y$ on the rectangle \[D = \{(x, y) \in \mathbb{R}^2 | 0 \leq x \leq 3, 0 \leq y \leq 2\}\]
+\begin{figure}[h]
+\setcounter{subfigure}{0}% Reset subfigure counter
+\subfloat[Region D]{
+\includeimg[width=0.4\textwidth]{question_1_14_7}{Rectangular domain D in the xy-plane with corners at (0,0), (3,0), (3,2), and (0,2), boundary segments labeled L1 (bottom), L2 (right), L3 (top), L4 (left), and point (2,2) marked on the top edge}
+}
+\subfloat[Surface $z=f(x,y)$]{
+\includeimg[width=0.4\textwidth]{question_1_14_7_part_2}{3D view of a surface over rectangular domain D with x from 0 to 3 and y from 0 to 2, surface has a peak near the back corner, edges L1 and L2 labeled, mesh coloring varies from pink to teal indicating height changes up to 9}
+}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%% CHAPTER 15 and 16 %%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{frame}
+%\begin{itemize}
+%\item Chapter 15 - Integrals and Integration techniques under various coordinate changes
+%\item Chapter 16 - Vector fields and Main Integration Theorems of Vector Calculus
+%\end{itemize}
+%We will begin with sections 15.1, 15.2, and 15.3: Double Integrals in rectangular and polar coordinates.
+%\end{frame}
+%
+%\begin{frame}
+%Goal: define and compute the signed "volume under the surface $z=f(x,y)$". This is a generalization of Riemann Integration in one dimension higher.
+%\begin{figure}
+%\setcounter{subfigure}{0}% Reset subfigure counter
+%\subfloat[Partition of Rectangular Region]{
+%\includegraphics[width=0.5\textwidth]{double1}
+%}
+%\subfloat[Riemann Approximation of Volume]{
+%\includegraphics[width=0.5\textwidth]{double2}
+%}
+%\end{figure}
+%
+%\end{frame}
+%
+%\begin{frame}
+%Rectangular Region: \[R = [a,b]\times[c,d] = \{(x,y)\in\mathbb{R}^2|a\leq x \leq b\text{ and }c\leq y \leq d\}\]
+%Subdivide $[a,b]$ into $m$ subintervals of equal width: 
+%\[a=x_0<x_1<\cdots<x_i<\cdots<x_m=b\]
+%\[x_i-x_{i-1}=\Delta x = \frac{b-a}{m}\]
+%Subdivide $[c,d]$ into $n$ subintervals of equal width:
+%\[y_j-y_{j-1}=\Delta y = \frac{d-c}{n}\]
+%\[c=y_0<y_1<\cdots<y_j<\cdots<y_n=d\]
+%Produce a subdivision of $R$ into $mn$ subrectangles each with area $\Delta A = \Delta x \Delta y$:
+%\begin{align*}
+%R_{ij} &= [x_{i-1},x_i]\times[y_{j-1},y_j] \\
+%&= \{(x,y)\in\mathbb{R}^2|x_{i-1}\leq x \leq x_i \text{ and }y_{j-1}\leq y \leq y_j\}
+%\end{align*}
+%\end{frame}
+%
+%\begin{frame}
+%Choose \emph{sample points} $(x^\ast_{ij},y^\ast_{ij})\in R_{ij}$ in each subrectangle. You can chose them with consistency using a system like Midpoint Rule (which always chooses the center), or just chose them arbitrarily.
+%\begin{center}
+%\includegraphics[width=\textwidth]{partition2d}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%Produce a Riemann Sum approximation of the volume by adding thin rectangular volumes of heights $f(x^\ast_{ij},y^\ast_{ij})$ with base areas all equal to $\Delta A$:
+%\[V\approx \sum_{i=1}^m\sum_{j=1}^nf(x^\ast_{ij},y^\ast_{ij})\Delta A\]
+%The limit as $m$ and $n$ approach infinity produces the precise volume:
+%\begin{definition}
+%The \emph{double integral} of $f(x,y)$ over the rectangle $R$ is
+%\[\iint_R f(x,y)\,dA = \lim_{m,n\to \infty}\sum_{i=1}^m\sum_{j=1}^nf(x^\ast_{ij},y^\ast_{ij})\Delta A\]
+%when this limit exists. In this case the function $f$ is called \emph{integrable}.
+%\end{definition}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%\begin{theorem}
+%[Fubini’s Theorem] If $f$ is continuous on the rectangle $R=[a,b]\times[c,d]$
+%then
+%\[\iint_R f(x,y)\,dA = \int_a^b\int_c^df(x,y)\, dy\, dx = \int_c^d\int_a^bf(x,y)\, dx\, dy\]
+%More generally, this is true if we assume that $f$ is bounded on $R$, $f$ is discontinuous only on a finite number of smooth curves, and the iterated integrals exist.
+%\end{theorem}
+%In the special case where $f(x, y)=g(x)h(y)$ can be factored as the product of a function of $x$ only and a function of $y$ only, the double integral of $f$ can be written as the product of two single integrals:
+%\[\iint_R g(x)h(y)\,dA = \int_a^b g(x)\, dx\,  \int_c^dh(y)\, dy\]
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%If $f(x,y)$ is continuous on a type $I$ region $D$ described by
+%\[a\leq x \leq b \]
+%\[g_1(x)\leq y \leq g_2(x)\]
+%\begin{figure}
+%\centering
+%\subfloat[Type I Region]{
+%  \includegraphics[width=0.25\textwidth]{t1version1}
+%}
+%\subfloat[Type I Region]{
+%  \includegraphics[width=0.25\textwidth]{t1version2}
+%}
+%\end{figure}
+%
+%then the double integral can be computed as an iterated integral of the form
+%\[\iint_D f(x,y)\,dA =\int_a^b \int_{g_1(x)}^{g_2(x)} f(x,y) \, dy\, dx \]
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%If $f(x,y)$ is continuous on a type $II$ region $D$ described by
+%\[h_1(y)\leq x \leq h_2(y)\]
+%\[c\leq y \leq d\]
+%\begin{figure}
+%\centering
+%\subfloat[Type II Region]{
+%  \includegraphics[width=0.25\textwidth]{t2version1}
+%}
+%\subfloat[Type II Region]{
+%  \includegraphics[width=0.25\textwidth]{t2version2}
+%}
+%\end{figure}
+%
+%then the double integral can be computed as an iterated integral of the form
+%\[\iint_D f(x,y)\,dA =\int_c^d \int_{h_1(y)}^{h_2(y)} f(x,y) \, dx\, dy \]
+%
+%\end{frame}
+%
+%
+%\begin{frame}
+%Fubini’s Theorem tells us that we can express a double integral as an iterated integral in two different orders, either by integrating with respect to $x$ first, or by integrating with respect to $y$ first. 
+%\bigskip
+%
+%Sometimes one order is much more difficult to evaluate than the other -- or even impossible.
+%\bigskip
+%
+%In these cases we need to change the order of integration. This usually involves changing how we express the bounds of the region over which we are integrating. 
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Using double integrals to compute areas:}
+%
+%If we integrate the constant function $f(x, y) = 1$ over a region $D$, we get the area of $D$:
+%
+%\[\iint_D 1 \, dA = \text{Area}(D)\]
+%
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{area1}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Other Basic Properties of Double Integrals:}
+%
+%\begin{itemize}
+%\item $\iint_D[f(x,y)+g(x,y)]\, dA = \iint_Df(x,y)\, dA + \iint_Dg(x,y)\, dA$
+%\item $\iint_D cf(x,y)\, dA = c\iint_Df(x,y)\, dA$ for $c\in \mathbb{R}$ a constant
+%\item If $f(x,y) \geq g(x,y)$ for all $(x,y)\in D$, then \[\iint_Df(x,y)\, dA \geq \iint_Dg(x,y)\, dA\]\pause
+%\item If $m \leq f(x, y) \leq M$ for all $(x, y)$ in $D$, then \[m\cdot\text{Area}(D) \leq \iint_D f(x,y) \, dA \leq M\cdot\text{Area}(D)\]
+%\end{itemize}
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Splitting regions:} If $D$ is the union of two smaller regions $D_1$ and $D_2$ that don’t overlap except perhaps on their boundaries
+%
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{splitting}
+%\end{center}
+%
+%then
+%
+%\[\iint_Df(x,y)\, dA = \iint_{D_1}f(x,y)\, dA + \iint_{D_2}f(x,y)\, dA\]
+%\end{frame}
+%
+%
+%\begin{frame}
+%All of our examples so far have been double integrals computed using \emph{rectangular} coordinates. Sometimes a region $D$ is better described using polar coordinates:
+%\begin{align*}
+%x&=r \cos \theta& &r\in [0,\infty)\\
+%y&=r \sin \theta & &\theta\in [0,2\pi]
+%\end{align*}
+%Recall the geometry of these coordinates:
+%\[x^2+y^2 = r^2(\cos^2\theta + \sin^2\theta) = r^2\]
+%%so $r$ gives a point's distance from the origin and $\theta$ gives the usual angle from the positive $x$-axis traveling around the origin.
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{polar}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%\begin{figure}
+%\centering
+%\subfloat[$0\leq r \leq 4$, $0\leq \theta \leq \frac{3\pi}{2}$]{
+%  \includegraphics[width=0.35\textwidth]{polarregion1}
+%}
+%\subfloat[$0\leq r \leq 3$, $?\leq \theta \leq ?$]{
+%  \includegraphics[width=0.35\textwidth]{polarregion2}
+%}
+%\hspace{0mm}
+%\subfloat[$?\leq r \leq ?$, $0\leq \theta \leq 2\pi$]{
+%  \includegraphics[width=0.35\textwidth]{polarregion3}
+%}
+%\subfloat[??]{   % ???
+%  \includegraphics[width=0.35\textwidth]{polarregion4}
+%}
+%\end{figure}
+%
+%\end{frame}
+%
+%\begin{frame}
+%A \emph{polar rectangular region} is given by specifying constant bounds for the two coordinates $r$ and $\theta$:
+%\[R = \{(r, \theta) | a \leq r \leq b, \alpha \leq \theta \leq \beta \}\]
+%where $0\leq a\leq b$ and $0\leq \beta-\alpha\leq 2\pi$
+%\begin{center}
+%\includegraphics[width=\textwidth]{polar2}
+%\end{center}
+%To integrate, we partition the region into polar subrectangles as before.
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Change of Coordinates formula for polar coordinates}
+%
+%If $f$ is continuous on a polar rectangle \[R = \{(r, \theta) | a \leq r \leq b, \alpha \leq \theta \leq \beta \}\] where $0\leq a\leq b$ and $0\leq \beta-\alpha\leq 2\pi$ then we use the formula $dA = r\,  dr \, d\theta$ to get a change of variables
+%
+%\[\iint_R f(x,y) \, dA = \int_\alpha^\beta \int_a^b f(r\cos\theta,r\sin\theta) r\,  dr \, d\theta\]
+%
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{polardifferential}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%If $f$ is continuous on a polar region \[D = \{(r, \theta) | h_1(\theta) \leq r \leq h_2(\theta), \alpha \leq \theta \leq \beta \}\] where $0\leq h_1(\theta) \leq h_2(\theta)$ and $0\leq \beta-\alpha\leq 2\pi$ then we use the formula $dA = r\,  dr \, d\theta$ to get a change of variables
+%
+%\[\iint_D f(x,y) \, dA = \int_\alpha^\beta \int_{h_1(\theta)}^{h_2(\theta)} f(r\cos\theta,r\sin\theta) r\,  dr \, d\theta\]
+%
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{polarregion}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf \S15.6: Tripple integration over regions in $\mathbb{R}^3$:}
+%
+%In three dimensions, the analogue of rectangles are rectangular boxes described by intervals on the $x, y,$ and $z$ axes:
+%\begin{align*}
+%a&\leq x \leq b\\
+%c&\leq y\leq d\\
+%r&\leq z \leq s\\
+%B=[a,b]&\times[c,d]\times[r,s]
+%\end{align*}
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{box}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%As before, to build Riemann sums we subdivide each interval to get a subdivision of our box region $B=[a,b]\times[c,d]\times[r,s]$ into subboxes $B_{ijk}$ of volume $\Delta V = \Delta x \Delta y \Delta z$.
+%\begin{align*}
+%\Delta x =\frac{b-a}{l} && \Delta y =\frac{d-c}{m}&& \Delta z =\frac{r-s}{n}  
+%\end{align*}
+%\begin{center}
+%\includegraphics[width=0.25\textwidth]{box}\includegraphics[width=0.25\textwidth]{subbox}
+%
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+% We choose a sample point (midpoints, say) $(x^\ast_{ijk},y^\ast_{ijk}, z^\ast_{ijk})\in R_{ijk}$ in each subbox giving us a height in the fourth dimension  over each subbox:
+% \[f(x^\ast_{ijk},y^\ast_{ijk}, z^\ast_{ijk}).\]
+%  Then the triple integral
+% \[\iiint_B f(x,y,z) \, dV = \lim_{l,m,n\to \infty} \sum_{i=1}^m\sum_{j=1}^n\sum_{k=1}^l f(x^\ast_{ijk},y^\ast_{ijk}, z^\ast_{ijk})\Delta V\]
+%is the limit of Riemann sums as the number of partitions grows and the number of subboxes get infinitesimally small, when this limit exists. \\
+%\bigskip We can interpret this as a signed ``hypervolume" underneath a ``hypersufrace" in four dimensions, but that's not very easy to visualize.
+%\end{frame}
+%
+%\begin{frame}
+%Just as for double integrals, we evaluate triple integrals by expressing them as iterated integrals:
+%\begin{theorem} [Fubini’s Theorem for Triple Integrals] 
+%If $f(x,y,z)$ is continuous on the rectangular box \[B = [a,b]\times[c,d]\times[r,s]\] then 
+%\[\iiint_B f(x,y,z) \, dV = \int_r^s \int_c^d\int_a^b f(x,y,z) \, dx\, dy\, dz\]
+%\end{theorem}
+%We can change the order of integration, but we need to worry about the order and description of the bounds for various solid regions of space.
+%\end{frame}
+%
+%\begin{frame}
+%\begin{figure}
+%\centering
+%\subfloat[A type 1 solid region with a type I projection]{
+%  \includegraphics[width=0.4\textwidth]{type1I}
+%}
+%\subfloat[A type 1 solid region with a type II projection]{
+%  \includegraphics[width=0.4\textwidth]{type1II}
+%}
+%\hspace{0mm}
+%\subfloat[A type 2 solid region]{
+%  \includegraphics[width=0.4\textwidth]{type2}
+%}
+%\subfloat[A type 3 solid region]{   % ???
+%  \includegraphics[width=0.4\textwidth]{type3}
+%}
+%\end{figure}
+%
+%\end{frame}
+%
+%\begin{frame}
+%When  $f (x, y, z) = 1$ is the constant function 1 over an entire solid region $E$ then the triple integral represents the volume of E:
+%\[\iiint_E  dV = \text{Volume}(E)\]
+%\end{frame}
+%
+%
+%\begin{frame}
+%When our volume of integration has a projection $D$ is conveniently described in polar coordinates, it is a straightforward to extend our approach to polar integration to tripple integrals.
+%\begin{align*}
+%x&=r \cos \theta& &r\in [0,\infty)\\
+%y&=r \sin \theta & &\theta\in [0,2\pi]
+%\end{align*}
+%\[x^2+y^2 = r^2(\cos^2\theta + \sin^2\theta) = r^2\]
+%%so $r$ gives a point's distance from the origin and $\theta$ gives the usual angle from the positive $x$-axis traveling around the origin.
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{polar}\includegraphics[width=0.5\textwidth]{cylindricalregion}
+%
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Cylindrical Coordinate System}: a point $P(x,y,z)$ in $\mathbb{R}^3$ is represented by the ordered triple \[(r, \theta, z)\] where $r$ and $\theta$ are polar coordinates of the projection of $P$ onto the $xy$-plane and $z$ is the usual $z$ coordinate.
+%\begin{align*}
+%x&=r \cos \theta& &r\in [0,\infty)\\
+%y&=r \sin \theta & &\theta\in [0,2\pi]\\
+%z&=z && z\in\mathbb{R}
+%\end{align*}
+%\begin{center}
+%\includegraphics[width=0.49\textwidth]{cylindrical1}\includegraphics[width=0.4\textwidth]{cylindrical2}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%Suppose that $E$ is a type 1 region whose projection $D$ onto the xy-plane is conveniently described in polar coordinates:
+%\[E = \{(x,y,z)\in \mathbb{R}^3| (x,y)\in D\text{ and } u_1(x,y)\leq z\leq u_2(x,y)\}\]
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{cylindricalregion}
+%\end{center}
+%\begin{align*}
+%\iiint_E f(x,y,z) = &\iint \left[ \int_{u_1(x,y)}^{u_2(x,y)} f(x,y,z) \, dz \right]\, dA\\
+%=&\int_\alpha^\beta \int_{h_1(\theta)}^{h_2(\theta)} \int_{u_1(r\cos\theta,r\sin\theta)}^{u_2(r\cos\theta,r\sin\theta)} f(r\cos\theta,r\sin\theta,z)\,  r\, dz\, dr\, d\theta
+%\end{align*}
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Spherical Coordinate System}: a point $P(x,y,z)$ in $\mathbb{R}^3$ is represented by the ordered triple $(\rho, \theta, \phi)$ where:
+%\begin{align*}
+%0\leq& \rho = |\overrightarrow{OP}|&&\text{ is the distance from $P$ to the origin}\\
+%0\leq&\theta\leq 2\pi  &&\text{ is the polar coordinate angle of $(x,y,0)$}\\
+%0\leq &\phi \leq \pi& &\text{is the angle between $\overrightarrow{OP}$ and the positive $z$ axis}
+%\end{align*}
+%
+%\includegraphics[width=0.5\textwidth]{spherical1}\includegraphics[width=0.5\textwidth]{spherical2}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Spherical Coordinate System}: a point $P(x,y,z)$ has spherical coordinates $(\rho, \theta, \phi)$ given by the following transformation:
+%	\begin{multicols}{2} % two columns
+%	\includegraphics[width=0.5\textwidth]{spherical2}
+%	
+%	\begin{align*}
+%		r &=\rho\sin\phi\\
+%		\rho^2 &= x^2+y^2+z^2\\
+%		&\\
+%		&\text{giving}\\
+%		&\\
+%		x &=r\cos\theta = \rho\sin\phi\cos\theta\\ 
+%		y &=r\cos\theta = \rho\sin\phi\sin\theta\\ 
+%		z &=\rho\cos\phi
+%	\end{align*}
+%
+%	\end{multicols} % two columns
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Change of Variables in Calc A}: The substitution rule for single variable integrals can be written 
+%\[\int_{g(a)}^{g(b)} f(x) \, dx = \int_a^b f(g(u))g'(u) \, du\]
+%where the substitution is given by $x=g(u)$, and so $dx = g'(u) du$.
+%
+%In this setting, the function $g$ gives a \emph{transformation} from the real line with $u$ as a variable to the real line with $x$ as a variable
+%\begin{align*}
+%g:&\mathbb{R}\longrightarrow \mathbb{R}\\
+%&u\longmapsto x=g(u)
+%\end{align*}
+%
+%The equation $dx = g'(u) du$ tells us how this transformation changes a differential. 
+%\end{frame}
+%
+%\begin{frame}
+%Polar coordinates are an example of a transformation from the $r\theta$-plane to the $xy$-plane.
+%%\begin{center}
+%%\includegraphics[width=0.8\textwidth]{polartrans}
+%%\end{center}
+%
+%The equation $dA = r \, dr \, d\theta$ plays the same role in this setting. 
+%
+%\end{frame}
+%
+%\begin{frame}
+%More generally, in two dimensions, a continuous  \emph{transformation} $$T(u,v) = ( x(u,v),y(u,v) )$$ from the $uv$-plane to the $xy$-plane
+%\begin{align*}
+%T:&\mathbb{R}^2\longrightarrow \mathbb{R}^2\\
+%(u,&v)\longmapsto (x(u,v),y(u,v))%=\langle g(u,v), h(u,v) \rangle
+%\end{align*}
+%that's  \emph{one-to-one} and given by differentiable coordinate functions $x(u,v)$ and $y(u,v)$  is a {\bf change of variables}.
+%\begin{center}
+%\includegraphics[width=0.8\textwidth]{transformation}
+%\end{center}
+%Being one-to-one onto its image allows us to go back and forth using the inverse transformation.
+%
+%\end{frame}
+%
+%\begin{frame}
+%Thinking about points as given by position vectors, we get a multivariable vector-valued function
+%\[\mathbf{r}(u,v) = \langle x(u,v), y(u,v) \rangle \]
+%that describes the transformation in vector form. We can use this function to study how the transformation changes the area of small rectangles.
+%\begin{center}
+%\includegraphics[width=0.8\textwidth]{transformation1}\\
+%%\includegraphics[width=0.8\textwidth]{transformation2}\\
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%The Jacobian of the transformation $T$ given by $x  = x(u, v)$ and $y = y(u, v)$ is the determinant
+%\[\frac{\partial(x,y)}{\partial(u,v)} = \left | 
+%\begin{matrix}
+%\frac{\partial x}{\partial u} & \frac{\partial x}{\partial v}\\[9pt]
+%\frac{\partial y}{\partial u} & \frac{\partial y}{\partial v}
+%\end{matrix}
+%\right | = \frac{\partial x}{\partial u}\frac{\partial y}{\partial v} - \frac{\partial x}{\partial v}\frac{\partial y}{\partial u}\]
+%
+%When T is a one-to-one (except perhaps on the boundary of S) transformation with both $S$ and $R$ regions of type I or II, then we can use the scaling factor $dA = \left |\frac{\partial(x,y)}{\partial(u,v)}\right |\, du \, dv$ to get
+%\[\iint_R f(x,y)\, dA = \iint_S f(x(u,v),y(u,v))\, \left |\frac{\partial(x,y)}{\partial(u,v)}\right |\, du \, dv\]
+%\end{frame}
+%
+%\begin{frame}
+%The same theory holds true for tripple integration. The Jacobian of the transformation $T$ from a solid $S\subset \mathbb{R}^3$ in $uvw$-coordinates to $E\subset \mathbb{R}^3$ in $xyz$-coordinates given by $x  = x(u, v, w)$,  $y = y(u, v, w)$ $z = z(u, v, w)$ is the determinant
+%
+%\[\scalebox{1}{$\frac{\partial(x,y,z)}{\partial(u,v,w)} = \left | 
+%\begin{matrix}
+%\frac{\partial x}{\partial u} & \frac{\partial x}{\partial v}& \frac{\partial x}{\partial w} \\[9pt]
+%\frac{\partial y}{\partial u} & \frac{\partial y}{\partial v}& \frac{\partial y}{\partial w} \\[9pt]
+%\frac{\partial z}{\partial u} & \frac{\partial z}{\partial v}& \frac{\partial z}{\partial w} \\[9pt]
+%\end{matrix}
+%\right |$}\]
+%
+%We can use the scaling factor $dV = \left |\frac{\partial(x,y,z)}{\partial(u,v,w)}\right |\, du \, dv\, dw$ to get
+%\[\scalebox{0.85}{$\iiint_R f(x,y,z)\, dV = \iiint_E f(x(u,v,w),y(u,v,w), z(u,v,w))\, \left |\frac{\partial(x,y,z)}{\partial(u,v,w)}\right |\, du \, dv\, dw$}\]
+%\end{frame}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Chapter 16 %%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%
+%\begin{frame}
+%A \emph{vector field} on region $D$ of the plane $\mathbb{R}^2$ is a function
+%\[{\bf F}(x,y)=\langle P(x,y), Q(x,y)\rangle = P(x,y)\mathbf{i} + Q(x,y)\mathbf{j}\]
+%that assigns to each point $(x,y)\in D$ a two-dimensional vector ${\bf F}(x,y)\in\mathbb{R}^2$. $P$ and $Q$ are the $x$ and $y$ component functions of ${\bf F}$.\begin{center}
+%\includegraphics[width=0.25\textwidth]{vector2}
+%\includegraphics[width=0.25\textwidth]{vector3}\\
+%\end{center}
+%A \emph{vector field} on a region $E$ of $\mathbb{R}^3$ is a function that assigns to each point $(x,y,z)\in E$ a three-dimensional vector:
+%\begin{align*}
+%{\bf F}(x,y,z)&=\langle P(x,y,z), Q(x,y,z), R(x,y,z)\rangle\\
+%&= P(x,y,z)\mathbf{i} + Q(x,y,z)\mathbf{j}+R(x,y,z)\mathbf{k}
+%\end{align*}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%Wind velocity
+%\begin{center}
+%\includegraphics[width=0.8\textwidth]{vf1}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%Ocean currents
+%\begin{center}
+%\includegraphics[width=0.8\textwidth]{vf2}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%Blood flow
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{vf3}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%If $f(x,y)$ or $f(x,y,z)$ is a function of two or three variables, we can always construct the \emph{gradient vector field} of $f$ by taking 
+%\[\nabla f(x,y) = \langle f_x(x,y), f_y(x,y) \rangle\]
+%or 
+%\[\nabla f(x,y,z) = \langle f_x(x,y,z), f_y(x,y,z), f_z(x,y,z) \rangle\]
+%
+%A vector field $\mathbf{F}$ is called \emph{conservative} if it is the gradient of some function $f$, that is, if there exists a function $f$ such that $\mathbf{F} = \nabla f$. 
+%
+%\bigskip
+%
+%In this case we say $f$ is a \emph{potential function} for $\mathbf{F}$.
+%
+%
+%\bigskip
+%
+%\pause Goal of Chapter 16 - Study differentiation and integration in the context of vector fields.
+%\end{frame}
+%
+%\begin{frame}
+%
+%
+%Consider a smooth plane curve $C$ in $\mathbb{R}^2$ given by the vector function
+%\[\mathbf{r}(t) = \langle x(t), y(t) \rangle\]
+%or, if you rather, parametric equations $x=x(t)$, $y=y(t)$. We study the segment given by $t\in[a,b]$.
+%	\begin{multicols}{2} % two columns
+%	\includegraphics[width=0.5\textwidth]{dividedt}
+%	
+%Subdivide the interval $[a,b]$ on the $t$ axis into $n$ subintervals of length  $\Delta t = \frac{b-a}{n}$  giving a subdivision of the arc on $C$ from $t=a$ to $t=b$ seperated by points $P_i = \mathbf{r}(t_i)$.
+%	\end{multicols} % two columns
+%
+%\end{frame}
+%
+%\begin{frame}
+%If we set
+%\[ds = |\mathbf{r}'(t)|\, dt = \sqrt{\left(\frac{dx}{dt}\right)^2+ \left(\frac{dy}{dt}\right)^2} dt\]
+%then the \emph{arc lencth} of $C$ from $t=a$ to $t=b$ is given by 
+%\[\int_C \, ds =\int_a^b \sqrt{\left(\frac{dx}{dt}\right)^2+ \left(\frac{dy}{dt}\right)^2} dt. \]
+%
+%\text{ }\bigskip\pause
+%
+%When $C$ is a space curve in three dimensions
+%\[\mathbf{r}(t) = \langle x(t), y(t), z(t) \rangle\]
+%then the arc length differential becomes
+%\[ds = |\mathbf{r}'(t)|\, dt = \sqrt{\left(\frac{dx}{dt}\right)^2+ \left(\frac{dy}{dt}\right)^2+ \left(\frac{dz}{dt}\right)^2} dt.\]
+%The \emph{arc lencth} of $C$ from $t=a$ to $t=b$ is given by 
+%\[\int_C \, ds =\int_a^b \sqrt{\left(\frac{dx}{dt}\right)^2+ \left(\frac{dy}{dt}\right)^2+ \left(\frac{dz}{dt}\right)^2} dt \]
+%
+%\end{frame}
+%
+%
+%
+%\begin{frame}
+%If $f(x,y)$ is any multivariable function whose domain includes the curve $C$, we say $f$ is \emph{defined} on $C$ or \emph{defined along} $C$.\bigskip
+%
+%In this case, the \emph{line integral of $f$ along $C$ with respect to arc length} is defined to be
+%\[\int_C f(x,y) \, ds = \int_a^b f(x(t),y(t)) \sqrt{\left(\frac{dx}{dt}\right)^2+ \left(\frac{dy}{dt}\right)^2} dt.\]
+%\end{frame}
+%
+%
+%
+%
+%\begin{frame}
+%\begin{center}
+%\includegraphics[width=0.8\textwidth]{curtain}
+%\end{center}
+%
+%\end{frame}
+%
+%
+%\begin{frame}
+%When $C$ is a space curve in three dimensions given by the vector function
+%\[\mathbf{r}(t) = \langle x(t), y(t), z(t) \rangle\]
+%then the line integral of a function $f(x,y,z)$ along $C$ with respect to arc length is
+%\[\int_C f(x,y,z)\,  ds =\int_a^b f(x(t),y(t),z(t))\sqrt{\left(\frac{dx}{dt}\right)^2+ \left(\frac{dy}{dt}\right)^2+ \left(\frac{dz}{dt}\right)^2} dt \]
+%
+%\end{frame}
+%
+%
+%
+%\begin{frame}
+%If instead of a smooth curve we have $C$ is the union of smooth segments giving a continuous path of smooth curve segments joined end to end, we call this a piecewise smooth curve.
+%\begin{center}
+%\includegraphics[width=0.26\textwidth]{piecewise}
+%\end{center}
+%In this case, we add up the segment line integrals to get the full line integral. For this example:
+%\[\scalebox{0.7}{$\int_C f(x,y), ds = \int_{C_1} f(x,y), ds + \int_{C_2} f(x,y), ds + \int_{C_3} f(x,y), ds + \int_{C_4} f(x,y), ds + \int_{C_5} f(x,y), ds$}\]
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Important Fact about Orientation for line integrals with respect to arc length:}
+%A given parametrization \[\mathbf{r}(t) = \langle x(t), y(t) \rangle \text{ for }a \leq  t \leq b\] determines an \emph{orientation} of a curve C from $\mathbf{r}(a)=P$ to $\mathbf{r}(b)=Q$, with the positive direction corresponding to increasing values of the parameter $t$.
+%
+%\bigskip
+%
+%If $-C$ denotes the same exact curve but a different parameterization giving the opposite orientation going from $Q$ to $P$, then the line integral with respect to arc length \emph{does not change value}.
+%
+%\[\int_Cf(x,y)\, ds = \int_{-C}f(x,y)\, ds\]
+%
+%This is because $\Delta s$ is always positive while $t$ increases along a parameterization.
+%\end{frame}
+%
+%
+%\begin{frame}
+%
+%\begin{center}
+%What exactly is $ds$?
+%\begin{center}
+%\includegraphics[width=\textwidth]{ds}
+%\end{center}
+%Notice: $\Delta s$ will always be positive, even if $\Delta x$ or $\Delta y$ change from positive to negative.
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}
+%The \emph{line integrals of $f(x,y,z)$ along C with respect to $x$, $y$, or $z$} can be constructed by replacing $\Delta s$ in our Riemann sum for the line integral with either $\Delta x$, $\Delta y$, or $\Delta z$.
+%
+%\begin{align*}
+%dx &= x'(t) dt &&\text{gives} && \int_Cf(x,y,z) dx = \int_a^b  f(x(t),y(t),z(t)) x'(t) dt \\
+%dy &= y'(t) dt &&\text{gives} && \int_Cf(x,y,z) dy = \int_a^b  f(x(t),y(t),z(t)) y'(t) dt \\
+%dz &= z'(t) dt &&\text{gives} && \int_Cf(x,y,z) dz = \int_a^b  f(x(t),y(t),z(t)) z'(t) dt
+%\end{align*}
+%\end{frame}
+%
+% \begin{frame}
+%
+%{\bf Important Fact about Orientation for line integrals with respect to x, y, or z:}
+%Let $C$ be a curve with a  given parametrization $\mathbf{r}(t)$  for $a \leq  t \leq b$ that determines an orientation of $C$ from $\mathbf{r}(a)=P$ to $\mathbf{r}(b)=Q$. 
+%
+%\bigskip
+%
+%Let $-C$ denote the same exact curve but using a parameterization with the opposite orientation going from $Q$ to $P$. Then:
+%
+%\begin{align*}
+%\int_{-C}f(x,y,z) dx = -\int_{C}f(x,y,z) dx\\
+%\int_{-C}f(x,y,z) dy = -\int_{C}f(x,y,z) dy\\
+%\int_{-C}f(x,y,z) dz = -\int_{C}f(x,y,z) dz\\
+%\end{align*}
+%
+%
+%This is because $\Delta x$, $\Delta y$, and $\Delta z$ can change sign while $t$ increases along a parameterization.
+%\end{frame}
+%
+%
+%
+%\begin{frame}
+%Let $\mathbf{F}$ be a continuous vector field defined on a smooth curve $C$ parameterized by a vector function $\mathbf{r}(t)$ for $ a \leq t \leq b$. 
+%
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{vectorlineint1}\includegraphics[width=0.5\textwidth]{vectorlineint2}
+%\end{center}
+%
+%
+%We can build a different type of line integral by integrating the scalar projection of the vector field along the forward tangential direction of the curve as we traverse $C$.
+%\end{frame}
+%
+%
+%
+%
+%\begin{frame}
+% The \emph{line integral of $\mathbf{F}$ along $C$} is
+%\[\int_C \mathbf{F}\cdot d\mathbf{r} = \int_a^b \mathbf{F}(\mathbf{r}(t))\cdot \mathbf{r}'(t)\, dt = \int_C \mathbf{F} \cdot {\bf T} \, ds\]
+%Here we formally think of $d\mathbf{r} = \mathbf{r}'(t)\, dt$. Notice that \[\mathbf{F} \cdot {\bf T} = \frac{\mathbf{F} \cdot {\mathbf{r}'}}{|\mathbf{r}'|}\]
+%is the scalar projection of the vector field $\mathbf{F}$ onto the tangent vector $\mathbf{r}(t)$. Thus:
+%
+%\bigskip
+%
+%\emph{the line integral of $\mathbf{F}$ along $C$ is just the line integral with respect to arc length of the tangential component of the vector field.}
+%\end{frame}
+%
+%\begin{frame}
+%For  $F = \langle P(x,y,z),Q(x,y,z),R(x,y,z)\rangle$ given by coordinate functions $P$, $Q$, and $R$, we have \begin{align*}
+%\int_C \mathbf{F}\cdot d\mathbf{r} &= \int_a^b \mathbf{F}(\mathbf{r}(t))\cdot \mathbf{r}'(t)\, dt  = \int_C P\, dx + Q\, dy+ R\, dz \\
+%\end{align*}
+%In two dimensions, this looks like $\mathbf{F} = \langle P(x,y),Q(x,y)\rangle$ and 
+%\begin{align*}
+%\int_C \mathbf{F}\cdot d\mathbf{r} &= \int_a^b \mathbf{F}(\mathbf{r}(t))\cdot \mathbf{r}'(t)\, dt  = \int_C P\, dx + Q\, dy \\
+%\end{align*}
+%\end{frame}
+%
+%\begin{frame}
+%Notice, if $-C$ is the opposite orientation for $C$, we must have
+%\begin{align*}
+%\int_{-C} \mathbf{F}\cdot d\mathbf{r} &= \int_{-C} P\, dx + Q\, dy+ R\, dz\\
+%&= \int_{-C} P\, dx + \int_{-C} Q\, dy+ \int_{-C} R\, dz\\
+%&= -\int_C P\, dx - \int_{C} Q\, dy- \int_{C} R\, dz\\
+%&= -\left( \int_{C} P\, dx + Q\, dy+ R\, dz \right)\\
+%&= -\int_{C} \mathbf{F}\cdot d\mathbf{r}
+%\end{align*}
+%\end{frame}
+%
+%\begin{frame}
+%\begin{theorem}[The Fundamental Theorem for Line Integrals]
+%Let $C$ be a smooth curve given by the vector function $\mathbf{r}(t)$ for $a\leq t \leq b$. Let $f$ be a differentiable function of two or three variables whose gradient vector field $\nabla f$ is continuous on $C$. Then 
+%\[\int_C \nabla f\cdot d\mathbf{r} = f(\mathbf{r}(b))-f(\mathbf{r}(a))\]
+%\end{theorem}
+%\begin{center}
+%\includegraphics[width=0.4\textwidth]{FTLI1}\includegraphics[width=0.4\textwidth]{FTLI2}
+%\end{center}
+%\begin{align*}
+%\scalebox{0.85}{$\int_C \nabla f\cdot d\mathbf{r} = f(x_2,y_2)-f(x_1,y_1)$}&&\scalebox{0.85}{$\int_C \nabla f\cdot d\mathbf{r} = f(x_2,y_2,z_2)-f(x_1,y_1,z_1)$}
+%\end{align*}
+%
+%\end{frame}
+%
+%\begin{frame}
+%If $C_1$ and $C_2$ are smooth curves both beginning at a point $A$ and ending at a point $B$, we have
+%
+%\[\int_{C_1} \nabla f\cdot d\mathbf{r} = \int_{C_2} \nabla f\cdot d\mathbf{r}. \]
+%
+%\begin{center}
+%\includegraphics[width=0.4\textwidth]{initialfinal}
+%\end{center}
+%
+%A vector field that satisfies this condition is said do be \emph{independent of path}.
+%
+%\bigskip
+%
+%Thus {\bf the line integral of a conservative vector field depends only on the endpoints of the curve and is independent of path.}
+%\end{frame}
+%
+%\begin{frame}
+%\begin{definition}
+%A space curve $C$ parameterized by a vector function $\mathbf{r}(t)$ for $a\leq t \leq b$ is called \emph{closed} if its terminal point coincides with its initial point, meaning $\mathbf{r}(b)=\mathbf{r}(a)$.
+%\end{definition}
+%\begin{center}
+%\includegraphics[width=0.3\textwidth]{closedcurve1}\hspace{2cm}\includegraphics[width=0.3\textwidth]{closedcurve2}
+%\end{center}
+%\pause
+%\begin{theorem}
+%$\int_C \mathbf{F}\cdot d\mathbf{r}$ is independent of path in $D$ if and only if $\int_C \mathbf{F}\cdot d\mathbf{r}=0$ for every closed path $C$ in $D$.
+%\end{theorem}
+%
+%\end{frame}
+%
+%\begin{frame}
+%We know that if $\mathbf{F}$ is a conservative vector field, then it is independent of path, so we can conclude that $\int_C \mathbf{F}\cdot d\mathbf{r}=0$ for all closed curves $C$.
+%
+%\bigskip
+%
+%What about the other direction? If $\mathbf{F}$ is independent of path, can we say it must be conservative?
+%
+%\end{frame}
+%
+%\begin{frame}
+%\begin{itemize}
+%\item  A region $D$ is called \emph{open} if it has no boundary points, meaning for every point $P\in D$ we can find a disk centered at $P$ that lies entirely inside $D$.
+%\item A region $D$ is called \emph{connected} if any two points in $D$ can be joined by a path that lies entirely in $D$.
+%\end{itemize}
+%\begin{center}
+%\includegraphics[width=\textwidth]{connected}
+%\end{center} 
+%\pause
+%\begin{theorem}
+%Suppose $\mathbf{F}$ is a continuous vector field defined on an open connected region $D$. 
+%
+%\bigskip
+%
+%If $\int_C \mathbf{F}\cdot d\mathbf{r}$ is independent of path in $D$ then $\mathbf{F}$ is a conservative vector field, meaning we can find a function $f$ such that $\nabla f = \mathbf{F}$.
+%\end{theorem}
+%
+%\end{frame}
+%
+%\begin{frame}
+%In two dimensions, when $\mathbf{F}(x, y)= \langle P(x, y), Q(x, y)\rangle$ is a conservative vector field on a region $D$, we know that $\mathbf{F}=\nabla f$. Thus 
+%\[P = \frac{\partial f}{\partial x}\text{ and } Q=\frac{\partial f}{\partial y},\]
+%
+%Suppose that $P$ and $Q$ have continuous first-order partial derivatives on $D$. Then taking derivatives again gives
+%
+%\[\frac{\partial P}{\partial y} = \frac{\partial f}{\partial y\partial x} = \frac{\partial f}{\partial x\partial y} =  \frac{\partial Q}{\partial x}\]
+%
+%If we could go in the other direction, this would give an easy way to check if a vector field is conservative. We can in nice situations.
+%\end{frame}
+%
+%\begin{frame}
+%\begin{definition}
+%A space curve $C$  is called \emph{simple} if it doesn't cross itself.
+%\end{definition}
+%\includegraphics[width=0.4\textwidth]{simple1}\hspace{2cm}\includegraphics[width=0.4\textwidth]{simple2}
+%
+%A region $D$ is called \emph{simply connected} if it is connected and any simple closed curve $C$ in $D$ encloses only points that are in $D$.
+%\begin{center}
+%\includegraphics[width=\textwidth]{simplyconnected}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%\begin{theorem}
+%Let $\mathbf{F}(x, y)= \langle P(x, y), Q(x, y)\rangle$ be a vector field defined on an open, simply connected region $D$.  Suppose that $P$ and $Q$ have continuous first-order partial derivatives on $D$. Then 
+%\[\frac{\partial P}{\partial y} = \frac{\partial Q}{\partial x}\text{ (throughout }D)\hspace{0.5cm}\text{if and only if}\hspace{0.5cm} \mathbf{F}\text{ is conservative.}\]
+%\end{theorem}
+%
+%\end{frame}
+%
+%\begin{frame}
+%\begin{center}
+%\includegraphics[width=0.9\textwidth]{rotational1}
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}
+%\begin{center}
+%\includegraphics[width=0.9\textwidth]{rotational2}
+%\end{center}
+%\end{frame}
+%
+%
+%\begin{frame}
+%\begin{definition}
+%A space curve $C$ parameterized by a vector function $\mathbf{r}(t)$ for $a\leq t \leq b$ is called \emph{closed} if its terminal point coincides with its initial point, meaning $\mathbf{r}(b)=\mathbf{r}(a)$.
+%\end{definition}
+%\begin{center}
+%\includegraphics[width=0.3\textwidth]{closedcurve1}\hspace{2cm}\includegraphics[width=0.3\textwidth]{closedcurve2}
+%\end{center}
+%
+%\begin{definition}
+%A space curve $C$  is called \emph{simple} if it doesn't cross itself.
+%\end{definition}
+%\includegraphics[width=0.4\textwidth]{simple1}\hspace{2cm}\includegraphics[width=0.4\textwidth]{simple2}
+%
+%\end{frame}
+%
+%\begin{frame}
+%Let $C$ be a simple closed curve in $\mathbb{R}^2$ and let $D$ be the region bounded by $C$. 
+%
+%\bigskip
+%
+%The positive orientation of $C$ refers to a single counterclockwise traversal of $C$ throughout which the region $D$ is {\bf always on the left}.
+%\begin{figure}
+%\centering
+%\subfloat[simple closed curve bounding a region]{
+%  \includegraphics[width=0.29\textwidth]{greens1}
+%}
+%\subfloat[Positive Orientation]{
+%  \includegraphics[width=0.29\textwidth]{greens2}
+%}
+%\subfloat[Negative Orientation]{
+%  \includegraphics[width=0.29\textwidth]{greens3}
+%}
+%\end{figure}
+%{\bf Green's Theorem:}  In this setting, if $P(x,y)$ and $Q(x,y)$ have continuous partial derivatives on an open region that contains D, then 
+%\[\int_C P\, dx + Q \, dy = \iint_D \left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\, dA\]
+%
+%\end{frame}
+%
+%\begin{frame}
+%Notation: We write an integral sign with a circle (some textbooks put a little arrow on the circle) to indicate that the line integral is calculated using the positive orientation of the closed curve $C$.
+%
+%\[\oint_C  \mathbf{F}\cdot d\mathbf{r} = \oint_C  P\, dx + Q\, dy\]
+%
+%Another notation for the positively oriented boundary curve of the plane region $D$ is $\partial D$, so the equation in Green’s Theorem can be written as
+%\[\int_{\partial D} P\, dx + Q \, dy = \iint_D \left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\, dA\]
+%
+%\end{frame}
+%
+%
+%\begin{frame}
+%Green’s Theorem gives us a useful way to compute the area of a region $D$ with positively oriented boundary $C$  using one of three special line integrals:
+%
+%\[ \text{Area}(D) = \oint_C x\, dy = -\oint_C y\, dx = \frac{1}{2}\oint_C x\, dy-y\, dx\]
+%
+%\end{frame}
+%
+%\begin{frame}
+%Divergence and Curl: 
+%
+%For $\mathbf{F} = \langle P, Q, R \rangle$ a vector field on $\mathbb{R}^3$:
+%
+%\bigskip
+%
+%The \emph{curl} of $\mathbf{F}$ produces a new vector field from $\mathbf{F}$ that helps us measure how $\mathbf{F}$ rotates at each point.
+%\[\text{curl}\,  \mathbf{F} = \nabla \times \mathbf{F} = \left| 
+%\begin{matrix}
+%\mathbf{i} & \mathbf{j} & \mathbf{k}\\
+%\frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z}\\
+%P & Q & R\\
+%\end{matrix}
+%\right | = \langle R_y-Q_z, P_z-R_x,Q_x-P_y\rangle\]
+%The \emph{divergence} of $\mathbf{F}$ produces a new scalar function from $\mathbf{F}$ that helps us measure how $\mathbf{F}$ expands out or compresses in at each point.
+%
+%\[\text{div}\, \mathbf{F} = \nabla \cdot \mathbf{F} = P_x+Q_y+R_z\]
+%\end{frame}
+%
+%\begin{frame}
+%Fact 1: If $\mathbf{F}$ is a conservative vector field, then $\text{curl}\, \mathbf{F} = 0$:
+%\[\text{curl}\, \nabla f = 0\]
+%(this gives us a way of verifying that a vector field is not conservative)
+%\pause
+%\bigskip
+%
+%Fact 2: when $\mathbf{F}$  is a vector field defined on all of $\mathbb{R}^3$ whose component functions have continuous partial derivatives, then the converse of the above is true: \[ \text{if }\text{curl}\, \mathbf{F} = 0\text{ then }\mathbf{F}\text{ is a conservative vector field.}\] (this gives us a way to test if a vector field is  conservative)
+%\pause
+%\bigskip
+%
+%Fact 3: when $\mathbf{F}$  is a vector field defined on all of $\mathbb{R}^3$ whose component functions have continuous second-order partial derivatives, then 
+%\[\text{div}\, \text{curl}\, \mathbf{F} = 0\]
+%\end{frame}
+%
+%\begin{frame}
+%
+%\begin{center}
+%\includegraphics[width=0.85\textwidth]{curl1}
+%\end{center}
+%
+%\begin{center}
+%\includegraphics[width=0.85\textwidth]{div1}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Vector Forms of Green’s Theorem:} Write $\mathbf{F} = \langle P(x,y),Q(x,y),0\rangle$ for our vector field in two dimensions, thinking of the $xy$-plane as embedded inside of $\mathbb{R}^3$. Then 
+%
+%\[\text{curl}\,  \mathbf{F} = \nabla \times \mathbf{F} = \left| 
+%\begin{matrix}
+%\mathbf{i} & \mathbf{j} & \mathbf{k}\\
+%\frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z}\\
+%P & Q & 0\\
+%\end{matrix}
+%\right | = \left\langle 0, 0,\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right\rangle\]
+%Thus Green's Theorem becomes:
+%\[\oint_C \mathbf{F}\cdot \, d\mathbf{r} =\oint_C \mathbf{F}\cdot \mathbf{T}\, ds = \iint_D \left(\text{curl}\, \mathbf{F}\right) \cdot \mathbf{k}\, dA\]
+%
+%Writing $\mathbf{n}$ for the outward unit normal vector to $C$, we can derive a useful way of computing the line integral of the normal component of $\mathbf{F}$ along $C$:  
+% 
+%\[\oint_C \mathbf{F}\cdot \mathbf{n}\, ds = \iint_D \frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}\, dA = \iint_D \text{div}\, \mathbf{F}(x,y)\, dA\]
+%
+%\end{frame}
+%
+%\begin{frame}
+%In Chapter 13, we saw how a vector-valued function of one variable $\mathbf{r}(t)$ traces out a space curve in $\mathbb{R}^3$. If instead we consider a vector valued function of two variables \[\mathbf{r}(u,v) = \langle x(u,v), y(u,v), z(u,v)\rangle\] for all $u$ and $v$ in a domain $D\subset \mathbb{R}^2$ then its image will (usually) be two dimensional. 
+%
+%\bigskip 
+%
+%We call the set $S$ of all points $\mathbf{r}(u,v)\in\mathbb{R}^3$ given by the image of such a function a \emph{parametric surface}. This is the two dimensional analog of a space curve. Instead of one parameter $t$, there are now two parameters, $u$ and $v$. 
+%
+%\begin{center}
+%\includegraphics[width=0.85\textwidth]{parameter}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%The \emph{vector equation} of $S$ is given by 
+%\[\mathbf{r}(u,v) = \langle x(u,v), y(u,v), z(u,v)\rangle\]
+% and the parametric equations are
+% \[x=x(u,v)\hspace{2cm}y=y(u,v)\hspace{2cm}z=z(u,v).\]
+%
+% \bigskip
+% 
+% Each choice $(u,v)\in D$ gives a point on $S$ traced out by the tip of the position vector $\mathbf{r}(u, v)$ as the inputs $(u, v)$ move throughout the region $D$.
+% 
+% \begin{center}
+%\includegraphics[width=0.85\textwidth]{parameter}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%Keeping $u$ or $v$ constant allows you to build a grid of space curves on $S$ which act like coordinates on the surface. 
+%
+%\bigskip
+%
+%At any fixed point $P_0=\mathbf{r}(u_0,v_0)$ on $S$:
+%\bigskip
+%
+%Tangent vector along the $u$-curve (with $v$ fixed) at the point $P_0$:
+%\[\mathbf{r}_u(u_0,v_0) = \langle x_u(u_0,v_0), y_u(u_0,v_0), z_u(u_0,v_0)\rangle\]
+%
+%Tangent vector along the $v$-curve (with $u$ fixed) at the point $P_0$:
+%\[\mathbf{r}_v(u_0,v_0) = \langle x_v(u_0,v_0), y_v(u_0,v_0), z_v(u_0,v_0)\rangle\]
+%
+%If both of these are nonzero and nonparallel, then a tangent plane will exist at $P_0$. This is the unique plane through $P_0$ containing the vectors $\mathbf{r}_u$ and $\mathbf{r}_v$.% plain containing the vectors the vector $n=Thus a normal to the tangent plane
+%
+%\end{frame}
+%
+%\begin{frame}
+%\[P_0 = \langle x(u_0,v_0), y(u_0,v_0), z(u_0,v_0) \rangle \]
+%\[\mathbf{r}_u(u_0,v_0) = \langle x_u(u_0,v_0), y_u(u_0,v_0), z_u(u_0,v_0)\rangle\]
+%\[\mathbf{r}_v(u_0,v_0) = \langle x_v(u_0,v_0), y_v(u_0,v_0), z_v(u_0,v_0)\rangle\]
+%
+%Set $\mathbf{n}=\mathbf{r}_u\times \mathbf{r}_v$. 
+%
+%\bigskip
+%
+%When $\mathbf{n}\neq {\bf 0}$ the tangent plane will exist and $\mathbf{n}$ will be a normal vector to the tangent plane at $P_0$. 
+%
+%\bigskip
+%
+%An equation for this tangent plane is given by:
+%
+%\[\mathbf{n}\cdot \langle x-x(u_0,v_0), y-y(u_0,v_0), z-z(u_0,v_0) \rangle=0\]
+%
+%A surface $S$ is \emph{smooth} at $P_0\in S$ if this tangent plane exists. A surface $S$ is \emph{smooth} if it is smooth at every one of its points.
+%\end{frame}
+%
+%\begin{frame}
+%Torus: take a circle of radius $a$ on the $xz$-plane with center $(b,0,0)$. Rotate the circle about the $z$ axis. We need, $a<b$ for this to make sense.
+%\begin{center}
+%\includegraphics[width=0.85\textwidth]{donut}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%Let $S$ be a smooth surface parameterized by the \emph{vector equation}
+%\[\mathbf{r}(u,v) = \langle x(u,v), y(u,v), z(u,v)\rangle\]
+%
+%for $(u,v)\in D\subset \mathbb{R}^2$. Take $u$ and $v$ derivatives of the parameterization:
+%\[\mathbf{r}_u(u,v) = \langle x_u(u,v), y_u(u,v), z_u(u,v)\rangle\]
+%\[\mathbf{r}_v(u,v) = \langle x_v(u,v), y_v(u,v), z_v(u,v)\rangle\]
+%
+%The \emph{surface area} of $S$ is the double integral 
+%
+%\[\text{Area}(S) = \iint_D |\mathbf{r}_u\times \mathbf{r}_v| dA \]
+%
+%\end{frame}
+%
+%
+%\begin{frame}
+%In the special case where $S$ is a surface given by the graph of an equation $z=g(x,y)$ for $(x,y)\in D$, it's easy to find a parameterization of $S$ in terms of $x$ and $y$:\\
+%\bigskip
+%Parametric form:
+% \[x=x\hspace{2cm}y=y\hspace{2cm}z=g(x,y).\]
+%
+%Vector form:
+%\[\mathbf{r}(x,y) = \langle x, y, g(x,y)\rangle\]
+%
+%\pause
+%
+%In this case, the surface area integral becomes
+%
+%\[\text{Area}(S) = \iint_D \sqrt{1+\left(\frac{\partial g}{\partial x}\right)^2+\left(\frac{\partial g}{\partial y}\right)^2} dA \]
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf From surface areas to surface integrals:} Let $S$ be a smooth surface parameterized by the \emph{vector equation}
+%\[\mathbf{r}(u,v) = \langle x(u,v), y(u,v), z(u,v)\rangle.\]
+%Let $f(x,y,z)$ be a multivariable function whose domain in $\mathbb{R}^3$ includes the surface $S$.
+%
+%\bigskip
+%
+%The \emph{surface integral} of $f$ over the surface $S$ is
+%
+%\[\iint_S f(x,y,z)\, dS = \iint_D f(\mathbf{r}(u,v))|\mathbf{r}_u\times \mathbf{r}_v| \, dA\]
+%
+%We think of $dS=|\mathbf{r}_u\times \mathbf{r}_v| dA$ as the surface area element. Notice that the surface area of $S$ is given by the integral of 1
+%
+%\[\text{Area}(S) = \iint_S 1\, dS  = \iint_D |\mathbf{r}_u\times \mathbf{r}_v| dA \]
+%
+%\end{frame}
+%
+%\begin{frame}
+%In the special case where $S$ is a surface given by the graph of an equation $z=g(x,y)$ for $(x,y)\in D$, values of the function $f$ on the surface are given by $f(x,y,g(x,y))$. As before, the surface has\\
+%\bigskip
+%Parametric form:
+% \[x=x\hspace{2cm}y=y\hspace{2cm}z=g(x,y).\]
+%
+%Vector form:
+%\[\mathbf{r}(x,y) = \langle x, y, g(x,y)\rangle\]
+%
+%
+%In this case, the surface integral of $f$ over the surface $S$ is
+%becomes
+%
+%\[\iint_S f(x,y,z)\, dS = \iint_D f(x,y,g(x,y)) \sqrt{1+\left(\frac{\partial g}{\partial x}\right)^2+\left(\frac{\partial g}{\partial y}\right)^2} dA \]
+%
+%\end{frame}
+%
+%\begin{frame}
+%Non-orientable surfaces lack two well defined ``sides". On a non-orientable surface, we can continuously transport a unit normal to its negative.
+%
+%\begin{center}
+%\includegraphics[width=1\textwidth]{nonori1}
+%\end{center}
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{nonori2}\includegraphics[width=0.5\textwidth]{nonori3}
+%\end{center}
+%
+%
+%\end{frame}
+%
+%\begin{frame}
+%Orientable surfaces have two well defined ``sides". Each side can be identified by one of the two unit normals. {\bf Choosing one of these unit normals corresponds to an \emph{orientation} for $S$.}
+%\begin{center}
+%\includegraphics[width=0.4\textwidth]{ori1}
+%\end{center}
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{ori2}
+%\end{center}
+%
+%
+%\end{frame}
+%
+%\begin{frame}
+%When $S$ is given by the graph of an equation $z=g(x,y)$ for $(x,y)\in D$, the parameterization
+%\[\mathbf{r}(x,y) = \langle x, y, g(x,y)\rangle\]
+%has tangent vectors
+%\[\mathbf{r}_x(x,y) = \langle 1, 0, g_x(x,y)\rangle\]
+%\[\mathbf{r}_y(x,y) = \langle 0, 1, g_y(x,y)\rangle\]
+%giving with a natural choice of an orientation for $S$ coming from the unit normal vector:
+%\[\mathbf{n} = \frac{\mathbf{r}_x\times\mathbf{r}_y}{|\mathbf{r}_x\times \mathbf{r}_y|} = \frac{\langle -g_x,-g_y,1\rangle}{\sqrt{1+\left(\frac{\partial g}{\partial x}\right)^2+\left(\frac{\partial g}{\partial y}\right)^2}}\]
+%Notice, this always points upwards. Call it the {\bf upward orientation} of the surface. The opposite orientation is given by $-\mathbf{n}$ and points downward.
+%
+%
+%\end{frame}
+%
+%\begin{frame}
+%More generally, when $S$ be a smooth surface parameterized by the \emph{vector equation}
+%\[\mathbf{r}(u,v) = \langle x(u,v), y(u,v), z(u,v)\rangle\]
+%a natural choice of an orientation for $S$ comes from choosing the unit normal vector:
+%\[\mathbf{n} = \frac{\mathbf{r}_u\times\mathbf{r}_v}{|\mathbf{r}_u\times \mathbf{r}_v|}.\]
+%
+%\end{frame}
+%
+%\begin{frame}
+%A {\bf closed surface} is a surface that is the boundary of a finite solid region $E\subset \mathbb{R}^3$.
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{out}\includegraphics[width=0.5\textwidth]{in}
+%\end{center}
+%For a closed surface the convention is that the {\bf positive orientation} is the one for which the normal vectors point outward from $E$, and inward-pointing normals give the {\bf negative orientation}.
+%\end{frame}
+%
+%\begin{frame}
+%Let $\mathbf{F}=\langle P,Q,R\rangle$ be a continuous vector field defined on an oriented surface $S$ with unit normal vector $\mathbf{n}$. \begin{center}
+%\includegraphics[width=\textwidth]{flux}
+%\end{center}
+%We define the {\bf surface integral (flux integral) of $\mathbf{F}$ over $S$} to be
+%\[\iint_S \mathbf{F}\cdot d\mathbf{S} = \iint_S \mathbf{F}\cdot\mathbf{n}\, dS  =\iint_D \mathbf{F}\cdot(\mathbf{r}_u\times\mathbf{r}_v)\, dA\]
+%(This formula assumes the orientation of $S$ induced by $\mathbf{r}_u \times \mathbf{r}_v$. For the opposite orientation, we multiply by -1.)
+%\end{frame}
+%
+%\begin{frame}
+%
+%$\mathbf{F} = \langle z, y, x \rangle$ along the unit sphere.
+%
+%\begin{center}
+%\includegraphics[width=0.8\textwidth]{sphereexample}
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}
+%$\mathbf{F} = \langle y, x, z \rangle$ along the boundary of the solid region $E$ enclosed by the paraboloid $z=1-x^2-y^2$ and the plane $z=0$.
+%\begin{center}
+%\includegraphics[width=0.8\textwidth]{last1}
+%\end{center}
+%\end{frame}
+%
+%
+%\begin{frame}
+%In the special case where $S$ is a surface given by the graph of an equation $z=g(x,y)$ for $(x,y)\in D$, we can use the parameterization
+%\[\mathbf{r}(x,y) = \langle x, y, g(x,y)\rangle\]
+%to compute
+%\[ \mathbf{F}\cdot(\mathbf{r}_x\times\mathbf{r}_y) = \langle P,Q,R\rangle\cdot \langle -g_x,-g_y,1\rangle  = -Pg_x-Qg_y+R. \]
+%Then this definition becomes
+%\[\iint_S \mathbf{F}\cdot d\mathbf{S}  =\iint_D (-Pg_x-Qg_y+R) \, dA.\]
+%Here we have assumed the upward orientation of $S$; for a downward orientation we multiply by -1.
+%
+%\end{frame}
+%
+%
+%\begin{frame}
+%A solid 3D region $E$ in $\mathbb{R}^3$ is called a \emph{simple solid region} if it is simultaneously type 1, 2, and 3.
+%
+%\bigskip
+%
+%This means we can integrate over it using our techniques from Chapter 15 by projecting along any of the three axes.
+%
+%\bigskip
+%
+%Any such region will have a 2D boundary that's a closed surface given by the union of a finite number of pieces.
+%
+%\begin{theorem}[The Divergence Theorem] Let $E$ be a simple solid region and let $S$ be the boundary surface of $E$, given with positive (outward) orientation. Let $\mathbf{F}$ be a vector field whose component functions have continuous partial derivatives on an open region that contains $E$. Then
+%\[\iint_S \mathbf{F}\cdot d{\bf S} = \iiint_E {\rm div}\, \mathbf{F}\, dV\]
+%\end{theorem}
+%\end{frame}
+%
+%\begin{frame}
+%Let $S$ be an oriented piecewise-smooth surface bounded by a simple, closed, piecewise-smooth boundary curve $C$. 
+%
+%\bigskip
+%
+%The orientation of $S$ is given by the choice of a unit normal vector $\mathbf{n}$ on $S$.
+%
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{stokes}
+%\end{center}
+%
+%Just like in Green's theorem, we parameterize our curve $C$ using a {\bf positive orientation} by declaring that the surface must always be on our left as we traverse the curve.
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%\begin{center}
+%\includegraphics[width=0.4\textwidth]{stokes}
+%\end{center}
+%
+%\begin{theorem}[Stokes' Theorem]
+%Let $\mathbf{F}$ be a vector field whose component functions have continuous partial derivatives on an open region in $\R^3$ that contains $S$. 
+%
+%Then 
+%\[ \int_C \mathbf{F}\cdot\, d\mathbf{r}=\iint_S {\rm curl}\, \mathbf{F}\cdot d{\bf S}\]
+%\end{theorem}
+%
+%Note that $S$ can actually be {\bf any smooth surface} so long as its boundary curve is given by $C$. This is something that can be used to our advantage to simplify the surface integral on occasion.
+%
+%
+%\end{frame}
+%
+%\begin{frame}
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{last2}
+%\end{center}
+%\pause
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{last3}
+%\end{center}
+%
+%\end{frame}
+%
+%\begin{frame}
+%
+%{\bf Stokes' Theorem} Let $\mathbf{F}$ be a vector field whose component functions have continuous partial derivatives on an open region in $\R^3$ that contains $S$. 
+%Then 
+%\[\int_C \mathbf{F}\cdot\, d\mathbf{r}=\iint_S {\rm curl}\, \mathbf{F}\cdot d{\bf S}\]
+%Compare this with:
+%
+%{\bf Vector Forms of Green’s Theorem:} Let $C$ be a simple closed curve in $\mathbb{R}^2$ and let $D$ be the region bounded by $C$.  Write $\mathbf{F} = \langle P(x,y),Q(x,y),0\rangle$ for our vector field in two dimensions, thinking of the $xy$-plane as embedded inside of $\mathbb{R}^3$. Then 
+%
+%\[\text{curl}\,  \mathbf{F} = \nabla \times \mathbf{F} = \left| 
+%\begin{matrix}
+%\mathbf{i} & \mathbf{j} & \mathbf{k}\\
+%\frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z}\\
+%P & Q & 0\\
+%\end{matrix}
+%\right | = \left\langle 0, 0,\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right\rangle\]
+%Thus Green's Theorem becomes:
+%\[\oint_C \mathbf{F}\cdot \, d\mathbf{r} =\oint_C \mathbf{F}\cdot \mathbf{T}\, ds = \iint_D \left(\text{curl}\, \mathbf{F}\right) \cdot \mathbf{k}\, dA\]
+%
+%\end{frame}
+%
+%
+%\begin{frame}
+%
+%{\bf Stokes' Theorem} Let $\mathbf{F}$ be a vector field whose component functions have continuous partial derivatives on an open region in $\R^3$ that contains $S$. 
+%Then 
+%\[\int_C \mathbf{F}\cdot\, d\mathbf{r}=\iint_S {\rm curl}\, \mathbf{F}\cdot d{\bf S}\]
+%
+%{\bf The Divergence Theorem} Let $E$ be a simple solid region and let $S$ be the boundary surface of $E$, given with positive (outward) orientation. Let $\mathbf{F}$ be a vector field whose component functions have continuous partial derivatives on an open region that contains $E$. Then
+%\[\iint_S \mathbf{F}\cdot d{\bf S} = \iiint_E {\rm div}\, \mathbf{F}\, dV\]
+%
+%
+%\end{frame}
+
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
